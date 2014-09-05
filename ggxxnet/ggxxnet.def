@@ -1,0 +1,28 @@
+LIBRARY ggxxnet
+EXPORTS
+	ggn_input
+	ggn_getPalette
+	ggn_startNetVS
+	ggn_procNetVS
+	ggn_startCS
+	ggn_vsLoadCompleted
+	ggn_startBattle
+	ggn_startVS
+	ggn_syncRandomTable
+	ggn_softReset
+	ggn_drawBattlePlayerName
+	ggn_endBattle
+	ggn_drawRankAndWin
+	ggn_drawCSPlayerName
+	ggn_procReplay
+	ggn_startReplay
+	ggn_syncKeySetting
+	ggn_endCS
+	ggn_endVS
+	ggn_randomLog
+	ggn_useSpecialRandom
+	ggn_randomShuffle
+	ggn_init
+	ggn_render
+	ggn_cleanup
+	

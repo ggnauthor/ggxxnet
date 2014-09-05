@@ -1,0 +1,226 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 日本語 resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+#ifdef _WIN32
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)\r\n"
+    "LANGUAGE 17, 1\r\n"
+    "#pragma code_page(932)\r\n"
+    "#include ""res\\ggncfg.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // 標準コンポーネント\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\ggncfg.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_GGNCFG_DIALOG DIALOGEX 0, 0, 380, 297
+STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_ACCEPTFILES | WS_EX_APPWINDOW
+CAPTION "ggxxnet config"
+FONT 8, "MS UI Gothic", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "OK",IDOK,265,261,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,324,261,50,14
+    EDITTEXT        IDC_USERNAME,54,18,70,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TRIP,54,33,70,14,ES_AUTOHSCROLL
+    CONTROL         "Enable Network",IDC_ENABLE_NET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,95,62,11
+    CONTROL         "Enable ExCharacters",IDC_USE_EX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,109,82,11
+    EDITTEXT        IDC_PORT,92,123,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Enable Message (not supprt)",IDC_ENABLECHAT,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,228,100,108,11
+    CONTROL         "Show Invalid Combo",IDC_DISP_INV_COMBO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,259,80,11
+    COMBOBOX        IDC_LOBBYADDR,144,18,160,169,CBS_DROPDOWN | CBS_AUTOHSCROLL | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Add",IDC_ADDADDR,316,18,21,14
+    PUSHBUTTON      "Delete",IDC_DELETEADDR,342,18,28,14
+    COMBOBOX        IDC_EDITCHARA,176,54,50,216,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_EDITCOLOR,249,54,47,176,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_EDITSPRITE,310,54,33,187,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Save",IDC_SAVECOLOR,347,54,22,14
+    GROUPBOX        "Profile",IDC_STATIC,5,5,127,77
+    LTEXT           "PlayerName",IDC_STATIC,12,21,38,8
+    LTEXT           "Trip Key",IDC_STATIC,12,36,26,8
+    GROUPBOX        "Network",IDC_STATIC,5,83,127,90
+    LTEXT           "Port (1024-65535)",IDC_STATIC,12,126,61,8
+    LTEXT           "Delay Frame",IDC_STATIC,12,141,39,8
+    GROUPBOX        "Lobby",IDC_STATIC,218,89,127,43,NOT WS_VISIBLE
+    GROUPBOX        "Others",IDC_STATIC,5,248,127,42
+    GROUPBOX        "Lobby Script/Text Address",IDC_SSAGROUP,136,5,239,37
+    GROUPBOX        "Color Edit",IDC_CEGROUP,136,42,240,211
+    LTEXT           "Character",IDC_STATIC,142,57,32,8
+    LTEXT           "Color",IDC_STATIC,230,57,18,8
+    LTEXT           "ID",IDC_STATIC,301,57,8,8
+    CONTROL         "Show GGXXNET Version && FPS",IDC_SHOWFPS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,273,113,11
+    LTEXT           "str0",IDC_STR0,12,50,41,8
+    LTEXT           "str2",IDC_STR2,12,68,41,8
+    LTEXT           "str3",IDC_STR3,222,160,37,8
+    LTEXT           "str4",IDC_STR4,164,172,34,8
+    LTEXT           "str5",IDC_STR5,222,172,37,8
+    LTEXT           "str6",IDC_STR6,164,184,34,8
+    LTEXT           "str7",IDC_STR7,222,184,37,8
+    LTEXT           "str0",IDC_STRB0,55,50,24,8
+    LTEXT           "str1",IDC_STR1,12,59,40,8
+    LTEXT           "str0",IDC_STRB1,55,59,24,8
+    LTEXT           "str0",IDC_STRB2,55,68,24,8
+    LTEXT           "str0",IDC_STRB3,259,160,24,8
+    LTEXT           "str0",IDC_STRB4,198,172,24,8
+    LTEXT           "str0",IDC_STRB5,259,172,24,8
+    LTEXT           "str0",IDC_STRB6,198,184,24,8
+    LTEXT           "str0",IDC_STRB7,259,184,24,8
+    COMBOBOX        IDC_DELAY,92,138,30,187,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Game Rounds",IDC_STATIC,12,156,44,8
+    COMBOBOX        IDC_ROUNDS,92,153,30,187,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Edit Message",IDC_MESSAGE,75,51,49,14
+    GROUPBOX        "Watch",IDC_STATIC,5,174,127,73
+    LTEXT           "Max Relay Node",IDC_STATIC,12,229,50,8
+    COMBOBOX        IDC_MAXRELAYNODE,92,226,30,187,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Allow Intrusion",IDC_WATCH_INTRUSION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,199,64,11
+    CONTROL         "Save Replay",IDC_WATCH_SAVEREP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,213,55,11
+    CONTROL         "Enable Broadcast",IDC_WATCH_ENABLEBC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,185,68,11
+    CONTROL         "Ignore Slow Connections",IDC_IGNORESLOW,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,229,117,91,11
+END
+
+IDD_COLOR DIALOGEX 0, 0, 143, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Color Edit"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "OK",IDOK,32,45,50,12
+    PUSHBUTTON      "Cancel",IDCANCEL,87,45,50,12
+    CONTROL         "",IDC_RS,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,10,5,106,10
+    LTEXT           "R",IDC_STATIC,6,5,8,8
+    LTEXT           "G",IDC_STATIC,5,18,8,8
+    LTEXT           "B",IDC_STATIC,6,31,8,8
+    CONTROL         "",IDC_GS,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,10,18,106,10
+    CONTROL         "",IDC_BS,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,10,31,106,10
+    EDITTEXT        IDC_RE,117,3,20,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_GE,117,16,20,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_BE,117,29,20,12,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+IDD_EDITMSGDLG DIALOGEX 0, 0, 256, 82
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit Message"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,140,65,50,12
+    PUSHBUTTON      "Cancel",IDCANCEL,199,65,50,12
+    EDITTEXT        IDC_EDIT1,7,7,242,50,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    LTEXT           "char count (max255):",IDC_STATIC,7,66,70,8
+    LTEXT           "スタティック",IDC_CHARCOUNT,79,66,20,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+1                       RT_MANIFEST             "res\\ggncfg.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_GGNCFG_DIALOG, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 296
+    END
+
+    IDD_EDITMSGDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 77
+        HORZGUIDE, 70
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 日本語 resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE 17, 1
+#pragma code_page(932)
+#include "res\ggncfg.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // 標準コンポーネント
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

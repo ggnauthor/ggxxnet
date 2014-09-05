@@ -1,0 +1,36 @@
+案１：①普通にPing送受信
+　　　
+　　　②NodeがNATNode1からping受けたときに未登録だったら追加して、このときにneedHolePunchフラグを立てる。
+　　　　pingrep/pingrep113を受けたときneedHolePunchがtrueなら、
+　　　　そのNodeが保持するすべてのIdle,NotReady状態のNodeにNATNode1のマシンIDとaddr:portを送信する。（UDP_HOLE_PUNCHコマンド）
+
+　　　③UDP_HOLE_PUNCHで送られたノードを追加する。このときStatusをIdleにセット。
+　　　　マシンIDが一致したノードは自分のポート番号を更新し、ノードの追加はしない。
+
+案２：①まずはGNodeのverが115以上であるか確認するため従来のpingを送信する。
+　　　
+　　　②ver115以上のNodeには、ping115を送信する。（自port番号を持たせるため）
+　　　
+　　　③GNode側でping115を受けたら、NATNode1に対してpingrep115を返信。（recvfrom()によって得られたSourcePortを含める）
+　　　　さらにGNode側でNATNode1の自port番号がrecvによって得られたSourcePortと異なる場合、NATが行われていると判断し、
+　　　　GNodeが保持するすべてのIdle,NotReady状態のNodeにNATNode1のaddr:portを送信する。（UDP_HOLE_PUNCH）
+　　　　
+　　　④UDP_HOLE_PUNCHを受け取ったNodeは自分の持つnodelistに送られたaddr:portを登録する
+　　　　このとき名前等は必要ない。
+
+　　　④NATNode1側はpingrep115で返却されたportを自分のポートとして保持しておく。
+　　　　（以後EnterServerは更新されたport番号で行うことになる。
+　　　　　Timeout前に通信を継続していれば永久にこのポートを使い続けられるのか？）
+
+----------------------------------------------------------------------------------------------------------------
+＊SetWindowPosが問題になってるかもしれないのでZoomXYが1.0だったらSetWindowPosを呼ばないようにしておこう
+
+
+
+
+
+SymmetricNATのせいで同じ名前が大量に追加されてしまう可能性がある
+相手がどこかのノードに接続すれば通信は復活するのでNoresは気軽に削除していって問題ないか？
+
+
+自分と同じIDを見つけ次第削除し、m_ownNodeを更新
