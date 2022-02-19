@@ -649,7 +649,7 @@ void ggn_input(void)
 			}
 			else
 			{
-				// 60ƒtƒŒ[ƒ€’ö“x‚Ì—]—T‚ª‚ ‚ê‚Î‘‘—‚è‰Â”\
+				// 60ƒtƒŒ[ƒ€’ö“x‚Ì—]—T‚ª‚ ‚ê‚Î‘‘—‚è‰Â”
 				if (**GGXX_ggnv_InputDataPtr & 0x00200020 && g_replay.m_skipFrame == 0 &&
 					g_netMgr->m_watchRecvSize - g_replay.m_frameCount * sizeof(DWORD) >= REPLAY_HEADER_SIZE + sizeof(DWORD)*60)
 				{
