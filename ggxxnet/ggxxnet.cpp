@@ -26,6 +26,38 @@
 #include <d3d8.h>
 #include <math.h>
 
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <string.h>
+std::string getRadminAddress() {
+	std::string line;
+	std::ifstream IPFile;
+	int offset;
+	char search0[] = "IPv4 Address. . . . . . . . . . . :";      // search pattern
+	char search1[] = "Ethernet adapter Radmin VPN:";      // search pattern
+	system("ipconfig > ip.txt");
+	bool foundRadmin = false;
+	IPFile.open("ip.txt");
+	if (IPFile.is_open())
+	{
+		while (!IPFile.eof())
+		{
+			getline(IPFile, line);
+			if ((offset = line.find(search1, 0)) != std::string::npos) {
+				foundRadmin = true;
+			}
+			if (foundRadmin == true && (offset = line.find(search0, 0)) != std::string::npos)
+			{
+				line.erase(0, 39);
+				break;
+			}
+		}
+	}
+	IPFile.close();
+	remove("ip.txt");
+	return line;
+}
 //******************************************************************
 // const
 //******************************************************************
@@ -3115,10 +3147,11 @@ void enterServer(bool p_busy)
 	getNameTrip(nametrip);
 
 	char buf[1024];
-	sprintf(buf, "cmd=enter|port=%d|name=%s|param=%d%02x%d%d%d%d%d%d%c%d|win=%d",
+	std::string radminAddress = getRadminAddress();
+	sprintf(buf, "cmd=enter|port=%d|name=%s|param=%d%02x%d%d%d%d%d%d%c%d|win=%d|radminAddress=%s",
 		g_setting.port, nametrip, p_busy, LOBBY_VER,
 		g_setting.useEx, 0, 0, 0, 0, 0,
-		getRankChar(g_setting.rank), g_setting.delay, g_setting.wins);
+		getRankChar(g_setting.rank), g_setting.delay, g_setting.wins, radminAddress);
 	internet_post(buf, strlen(buf), 1024, server, script);
 
 	/*
