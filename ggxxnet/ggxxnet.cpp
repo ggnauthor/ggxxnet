@@ -1,8 +1,8 @@
 /* for Visual Studio 8.0 */
 #ifdef _MSC_VER
-	#if (_MSC_VER >= 1400)
-		#define POINTER_64 __ptr64
-	#endif
+#if (_MSC_VER >= 1400)
+#define POINTER_64 __ptr64
+#endif
 #endif
 
 //******************************************************************
@@ -21,43 +21,11 @@
 #include "d3dfont.h"
 #include "util.h"
 #include "res/resource.h"
-
 #include <mbstring.h>
 #include <d3d8.h>
 #include <math.h>
-
-#include <iostream>
-#include <string>
-#include <fstream>
 #include <string.h>
-std::string getRadminAddress() {
-	std::string line;
-	std::ifstream IPFile;
-	int offset;
-	char search0[] = "IPv4 Address. . . . . . . . . . . :";      // search pattern
-	char search1[] = "Ethernet adapter Radmin VPN:";      // search pattern
-	system("ipconfig > ip.txt");
-	bool foundRadmin = false;
-	IPFile.open("ip.txt");
-	if (IPFile.is_open())
-	{
-		while (!IPFile.eof())
-		{
-			getline(IPFile, line);
-			if ((offset = line.find(search1, 0)) != std::string::npos) {
-				foundRadmin = true;
-			}
-			if (foundRadmin == true && (offset = line.find(search0, 0)) != std::string::npos)
-			{
-				line.erase(0, 39);
-				break;
-			}
-		}
-	}
-	IPFile.close();
-	remove("ip.txt");
-	return line;
-}
+
 //******************************************************************
 // const
 //******************************************************************
@@ -117,19 +85,19 @@ public:
 	enum { FVF = (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1) };
 	D3DV_GGN(void)
 	{
-		m_x			= 0.0f;
-		m_y			= 0.0f;
-		m_z			= 1.0f;
-		m_rhw		= 1.0f;
-		m_diffuse	= 0x00000000;
-		m_u			= 0.0f;
-		m_v			= 0.0f;
+		m_x = 0.0f;
+		m_y = 0.0f;
+		m_z = 1.0f;
+		m_rhw = 1.0f;
+		m_diffuse = 0x00000000;
+		m_u = 0.0f;
+		m_v = 0.0f;
 	}
 	~D3DV_GGN(void) {}
-	
-	void setPos(float p_x, float p_y)	{ m_x = p_x; m_y = p_y; }
-	void setColor(DWORD p_diffuse)		{ m_diffuse = p_diffuse; }
-	void setUV(float p_u, float p_v)	{ m_u = p_u; m_v = p_v; }
+
+	void setPos(float p_x, float p_y) { m_x = p_x; m_y = p_y; }
+	void setColor(DWORD p_diffuse) { m_diffuse = p_diffuse; }
+	void setUV(float p_u, float p_v) { m_u = p_u; m_v = p_v; }
 
 private:
 	float	m_x;
@@ -148,11 +116,11 @@ CVsNetModeInfo		g_vsnet;
 CReplayModeInfo		g_replay;
 EnemyInfo			g_enemyInfo;
 SettingInfo			g_setting;
-CD3DFont*			g_d3dfont;
+CD3DFont* g_d3dfont;
 LPDIRECT3DDEVICE8	g_d3dDev;
-CIcon*				g_dirIcon;
-DWORD*				g_myPalette[CHARACOUNT][PALCOUNT];
-CSharedMemory*		g_smPallette = NULL;
+CIcon* g_dirIcon;
+DWORD* g_myPalette[CHARACOUNT][PALCOUNT];
+CSharedMemory* g_smPallette = NULL;
 IniFileInfo			g_iniFileInfo;
 
 HINSTANCE			g_dllInst = NULL;
@@ -163,9 +131,9 @@ WORD				g_oldCS = 1;
 
 //-------------------------------------------------------debug
 CRITICAL_SECTION	g_csLogOut;
-char*				g_netLog = NULL;
-char*				g_keyLog = NULL;
-char*				g_rndLog = NULL;
+char* g_netLog = NULL;
+char* g_keyLog = NULL;
+char* g_rndLog = NULL;
 char				g_syncErrLog[10][256];
 char				g_moduleDir[256];
 CCpuID				g_cpuid;
@@ -182,7 +150,7 @@ void leaveServer(void);
 
 void readNodeList(void);
 
-void getscpiptaddr(char* &p_server, char* &p_script);
+void getscpiptaddr(char*& p_server, char*& p_script);
 void replaceUserPalette(int p_chara, int p_pal, char* p_data);
 void readUserPalette(void);
 void deleteUserPalette(void);
@@ -207,7 +175,7 @@ void getWindowSize(int p_clientw, int p_clienth, int* p_windoww, int* p_windowh)
 void drawText(char* p_str, int p_x, int p_y, DWORD p_color, CD3DFont::EAlign p_align);
 
 #if TESTER
-	void __stdcall tester_input(void);
+void __stdcall tester_input(void);
 #endif
 
 #include "ggxxinterface.h"
@@ -244,7 +212,7 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 
 #if DEBUG_OUTPUT_LOG
 		/* ÉçÉOÉtÉ@ÉCÉãÇÉNÉäÉA */
-		FILE *fp = fopen("log.txt", "w");
+		FILE* fp = fopen("log.txt", "w");
 		if (fp) fclose(fp);
 #endif
 		GetCurrentDirectory(256, g_moduleDir);
@@ -258,13 +226,13 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 		if (g_setting.rank < Rank_S || g_setting.rank > Rank_F)
 		{
 			DBGOUT_LOG("initialized ggn_setting.dat, because it is broken!!\n");
-			g_setting.rank			= Rank_F;
-			g_setting.wins			= 0;
-			g_setting.totalBattle	= 0;
-			g_setting.totalDraw		= 0;
-			g_setting.totalError	= 0;
-			g_setting.totalLose		= 0;
-			g_setting.totalWin		= 0;
+			g_setting.rank = Rank_F;
+			g_setting.wins = 0;
+			g_setting.totalBattle = 0;
+			g_setting.totalDraw = 0;
+			g_setting.totalError = 0;
+			g_setting.totalLose = 0;
+			g_setting.totalWin = 0;
 		}
 		g_smPallette = new CSharedMemory("ggxxnet_pal", 1024);
 
@@ -299,7 +267,7 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 
 		g_nodeMgr = new CNodeMgr;
 		DBGOUT_LOG("nodeMgr init ok!!\n");
-		
+
 		g_denyListMgr = new CDenyListMgr;
 		g_denyListMgr->readfile();
 
@@ -320,41 +288,41 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 
 #if !TESTER
 
-		*GGXX_ggnf_input			= (DWORD)GetProcAddress(hDLL, "ggn_input");
-		*GGXX_ggnf_getPalette		= (DWORD)GetProcAddress(hDLL, "ggn_getPalette");
-		*GGXX_ggnf_procNetVS		= (DWORD)GetProcAddress(hDLL, "ggn_procNetVS");
-		*GGXX_ggnf_startCS			= (DWORD)GetProcAddress(hDLL, "ggn_startCS");
-		*GGXX_ggnf_startNetVS		= (DWORD)GetProcAddress(hDLL, "ggn_startNetVS");
-		*GGXX_ggnf_vsLoadCompleted	= (DWORD)GetProcAddress(hDLL, "ggn_vsLoadCompleted");
-		*GGXX_ggnf_startBattle		= (DWORD)GetProcAddress(hDLL, "ggn_startBattle");
-		*GGXX_ggnf_startVS			= (DWORD)GetProcAddress(hDLL, "ggn_startVS");
-		*GGXX_ggnf_syncRandomTable	= (DWORD)GetProcAddress(hDLL, "ggn_syncRandomTable");
-		
-		*GGXX_ggnf_softReset			= (DWORD)GetProcAddress(hDLL, "ggn_softReset");
-		*GGXX_ggnf_drawBattlePlayerName	= (DWORD)GetProcAddress(hDLL, "ggn_drawBattlePlayerName");
-		*GGXX_ggnf_endBattle			= (DWORD)GetProcAddress(hDLL, "ggn_endBattle");
-		*GGXX_ggnf_drawRankAndWin		= (DWORD)GetProcAddress(hDLL, "ggn_drawRankAndWin");
-		*GGXX_ggnf_drawCSPlayerName		= (DWORD)GetProcAddress(hDLL, "ggn_drawCSPlayerName");
-		*GGXX_ggnf_procReplay			= (DWORD)GetProcAddress(hDLL, "ggn_procReplay");
-		*GGXX_ggnf_syncKeySetting		= (DWORD)GetProcAddress(hDLL, "ggn_syncKeySetting");
-		
-		*GGXX_ggnf_startReplay			= (DWORD)GetProcAddress(hDLL, "ggn_startReplay");
-		*GGXX_ggnf_endCS				= (DWORD)GetProcAddress(hDLL, "ggn_endCS");
-		*GGXX_ggnf_endVS				= (DWORD)GetProcAddress(hDLL, "ggn_endVS");
-		*GGXX_ggnf_randomLog			= (DWORD)GetProcAddress(hDLL, "ggn_randomLog");
-		*GGXX_ggnf_useSpecialRandom		= (DWORD)GetProcAddress(hDLL, "ggn_useSpecialRandom");
-		*GGXX_ggnf_randomShuffle		= (DWORD)GetProcAddress(hDLL, "ggn_randomShuffle");
-		*GGXX_ggnf_init					= (DWORD)GetProcAddress(hDLL, "ggn_init");
-		*GGXX_ggnf_render				= (DWORD)GetProcAddress(hDLL, "ggn_render");
-		*GGXX_ggnf_cleanup				= (DWORD)GetProcAddress(hDLL, "ggn_cleanup");
+		* GGXX_ggnf_input = (DWORD)GetProcAddress(hDLL, "ggn_input");
+		*GGXX_ggnf_getPalette = (DWORD)GetProcAddress(hDLL, "ggn_getPalette");
+		*GGXX_ggnf_procNetVS = (DWORD)GetProcAddress(hDLL, "ggn_procNetVS");
+		*GGXX_ggnf_startCS = (DWORD)GetProcAddress(hDLL, "ggn_startCS");
+		*GGXX_ggnf_startNetVS = (DWORD)GetProcAddress(hDLL, "ggn_startNetVS");
+		*GGXX_ggnf_vsLoadCompleted = (DWORD)GetProcAddress(hDLL, "ggn_vsLoadCompleted");
+		*GGXX_ggnf_startBattle = (DWORD)GetProcAddress(hDLL, "ggn_startBattle");
+		*GGXX_ggnf_startVS = (DWORD)GetProcAddress(hDLL, "ggn_startVS");
+		*GGXX_ggnf_syncRandomTable = (DWORD)GetProcAddress(hDLL, "ggn_syncRandomTable");
 
-		*GGXX_ggnv_cfg_enableNet	= (DWORD)&g_setting.enableNet;
-		*GGXX_ggnv_cfg_dispInvCmb	= (DWORD)&g_setting.dispInvCombo;
-		*GGXX_ggnv_cfg_enableExChara= 0;
-		*GGXX_ggnv_render_off		= 0;
+		*GGXX_ggnf_softReset = (DWORD)GetProcAddress(hDLL, "ggn_softReset");
+		*GGXX_ggnf_drawBattlePlayerName = (DWORD)GetProcAddress(hDLL, "ggn_drawBattlePlayerName");
+		*GGXX_ggnf_endBattle = (DWORD)GetProcAddress(hDLL, "ggn_endBattle");
+		*GGXX_ggnf_drawRankAndWin = (DWORD)GetProcAddress(hDLL, "ggn_drawRankAndWin");
+		*GGXX_ggnf_drawCSPlayerName = (DWORD)GetProcAddress(hDLL, "ggn_drawCSPlayerName");
+		*GGXX_ggnf_procReplay = (DWORD)GetProcAddress(hDLL, "ggn_procReplay");
+		*GGXX_ggnf_syncKeySetting = (DWORD)GetProcAddress(hDLL, "ggn_syncKeySetting");
+
+		*GGXX_ggnf_startReplay = (DWORD)GetProcAddress(hDLL, "ggn_startReplay");
+		*GGXX_ggnf_endCS = (DWORD)GetProcAddress(hDLL, "ggn_endCS");
+		*GGXX_ggnf_endVS = (DWORD)GetProcAddress(hDLL, "ggn_endVS");
+		*GGXX_ggnf_randomLog = (DWORD)GetProcAddress(hDLL, "ggn_randomLog");
+		*GGXX_ggnf_useSpecialRandom = (DWORD)GetProcAddress(hDLL, "ggn_useSpecialRandom");
+		*GGXX_ggnf_randomShuffle = (DWORD)GetProcAddress(hDLL, "ggn_randomShuffle");
+		*GGXX_ggnf_init = (DWORD)GetProcAddress(hDLL, "ggn_init");
+		*GGXX_ggnf_render = (DWORD)GetProcAddress(hDLL, "ggn_render");
+		*GGXX_ggnf_cleanup = (DWORD)GetProcAddress(hDLL, "ggn_cleanup");
+
+		*GGXX_ggnv_cfg_enableNet = (DWORD)&g_setting.enableNet;
+		*GGXX_ggnv_cfg_dispInvCmb = (DWORD)&g_setting.dispInvCombo;
+		*GGXX_ggnv_cfg_enableExChara = 0;
+		*GGXX_ggnv_render_off = 0;
 #endif
 #if !TESTER
-		*GGXX_ggnv_backupdataDir = new char[256];
+		* GGXX_ggnv_backupdataDir = new char[256];
 		sprintf(*GGXX_ggnv_backupdataDir, "%s/backupdata", g_moduleDir);
 #if _DEBUG // iniÉtÉ@ÉCÉãÇ≈éwíËÇµÇΩÉpÉXÇ…ë∂ç›Ç∑ÇÈÉfÅ[É^ÇéQè∆Ç∑ÇÈ
 		SetCurrentDirectory(g_iniFileInfo.m_dataDir);
@@ -371,7 +339,7 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 #endif
 		if (*GGXX_ggnv_backupdataDir != (char*)0x51ab00)
 		{
-			delete[] *GGXX_ggnv_backupdataDir;
+			delete[] * GGXX_ggnv_backupdataDir;
 			*GGXX_ggnv_backupdataDir = (char*)0x51ab00; // å≥ÅXÇÃíl"backupdata"ÇéwÇ∑
 		}
 		writeIniFile();
@@ -433,7 +401,7 @@ void ggn_input(void)
 #endif
 
 	// äœêÌé“Ç…ÉfÅ[É^ëóêMÇ∑ÇÈÅBÅiì¡Ç…ñàâÒëóÇÈïKóvÇ‡Ç»Ç¢ÇÃÇ≈1FÇ≤Ç∆Ç…ÉçÅ[ÉeÅ[ÉgÅj
-	
+
 	// êÿífÇ≥ÇÍÇΩèuä‘Ç…ëóÇÁÇ»Ç≠Ç»ÇÈÇÃÇÕÇ‹Ç∏Ç¢
 	// àÍå©ìÆÇ¢ÇƒÇ¢ÇÈÇÊÇ§Ç≈ç≈å„ÇÃÉfÅ[É^Ç™ëóÇÁÇÍÇƒÇ¢Ç»Ç¢
 	//if (g_netMgr->m_connect || g_netMgr->m_watch)
@@ -488,7 +456,7 @@ void ggn_input(void)
 		{
 			g_netMgr->disconnect("suspend freeze");
 		}
-		
+
 		/* suspendíÜÇ≈Ç‡recvSuspendÇ™trueÇ…Ç»ÇÈÇ‹Ç≈ÉLÅ[ÇëóÇËë±ÇØÇÈ */
 		if (g_netMgr->m_recvSuspend == false)
 		{
@@ -513,7 +481,7 @@ void ggn_input(void)
 				*GGXX_MODE2 = 0x38;
 			}
 			else if ((**GGXX_ggnv_InputDataPtr & 0xffff0000) == 0x090f0000 ||
-					 (**GGXX_ggnv_InputDataPtr & 0x0000ffff) == 0x0000090f)
+				(**GGXX_ggnv_InputDataPtr & 0x0000ffff) == 0x0000090f)
 			{
 				// soft reset
 				for (int i = 0; i < g_netMgr->m_queueSize; i++)
@@ -631,25 +599,25 @@ void ggn_input(void)
 					}
 					g_replay.m_frameCount++;
 				}
-				
+
 			}
 
-	#if DEBUG_OUTPUT_KEY
+#if DEBUG_OUTPUT_KEY
 			char str[1024];
 			//sprintf(str, "%.3d(rnd=%3d) : %08x\n", g_netMgr->m_time, *GGXX_RANDOMCOUNTER, **GGXX_ggnv_InputDataPtr);
 
-			DWORD*	time  = (DWORD*)0x602760;
-			WORD*	life1 = (WORD*)0x5ff5a0;
-			WORD*	life2 = (WORD*)0x5ff684;
+			DWORD* time = (DWORD*)0x602760;
+			WORD* life1 = (WORD*)0x5ff5a0;
+			WORD* life2 = (WORD*)0x5ff684;
 			sprintf(str, "frm=%4d cnt=%4d rndcnt=%3d time=%2d life%d-%d : %08x\n",
 				g_replay.m_frameCount, *GGXX_FRAMECOUNTER, *GGXX_RANDOMCOUNTER,
 				*GGXX_TIME, *GGXX_1PLIFE, *GGXX_2PLIFE,
 				**GGXX_ggnv_InputDataPtr);
-			
+
 			ENTERCS(&g_csLogOut);
 			if (strlen(g_keyLog) + strlen(str) < LOG_SIZE) strcat(g_keyLog, str);
 			LEAVECS(&g_csLogOut);
-	#endif //DEBUG_OUTPUT_KEY
+#endif //DEBUG_OUTPUT_KEY
 		}
 		else if (*GGXX_MODE1 & 0x800000 && *GGXX_MODE2 == 6) /* äœêÌ(ëŒêÌíÜ) */
 		{
@@ -671,7 +639,7 @@ void ggn_input(void)
 				g_netMgr->initWatchVars();
 			}
 			else if ((**GGXX_ggnv_InputDataPtr & 0xffff0000) == 0x090f0000 ||
-					 (**GGXX_ggnv_InputDataPtr & 0x0000ffff) == 0x0000090f)
+				(**GGXX_ggnv_InputDataPtr & 0x0000ffff) == 0x0000090f)
 			{
 				// soft reset
 				for (int i = 0; i < g_netMgr->m_queueSize; i++)
@@ -683,12 +651,12 @@ void ggn_input(void)
 			{
 				// 60ÉtÉåÅ[ÉÄíˆìxÇÃó]óTÇ™Ç†ÇÍÇŒëÅëóÇËâ¬î
 				if (**GGXX_ggnv_InputDataPtr & 0x00200020 && g_replay.m_skipFrame == 0 &&
-					g_netMgr->m_watchRecvSize - g_replay.m_frameCount * sizeof(DWORD) >= REPLAY_HEADER_SIZE + sizeof(DWORD)*60)
+					g_netMgr->m_watchRecvSize - g_replay.m_frameCount * sizeof(DWORD) >= REPLAY_HEADER_SIZE + sizeof(DWORD) * 60)
 				{
 					// ëÅëóÇË
 					g_replay.m_skipFrame = 5;
 				}
-				
+
 				// ÉfÅ[É^Ç™óàÇÈÇ‹Ç≈ë“ã@
 				int waittime = 0;
 				while (g_replay.m_data.inputData[g_replay.m_frameCount] == 0xffffffff)
@@ -701,7 +669,7 @@ void ggn_input(void)
 					Sleep(50); waittime += 50;
 					DBGOUT("wait to receive watch data...\n");
 				}
-				
+
 				if (g_replay.m_data.inputData[g_replay.m_frameCount] == 0xffffffff)
 				{
 					**GGXX_ggnv_InputDataPtr = 0;
@@ -752,22 +720,22 @@ void ggn_input(void)
 				}
 			}
 
-	#if DEBUG_OUTPUT_KEY
+#if DEBUG_OUTPUT_KEY
 			char str[1024];
 			//sprintf(str, "%.3d(rnd=%3d) : %08x\n", g_netMgr->m_time, *GGXX_RANDOMCOUNTER, **GGXX_ggnv_InputDataPtr);
 
-			DWORD*	time  = (DWORD*)0x602760;
-			WORD*	life1 = (WORD*)0x5ff5a0;
-			WORD*	life2 = (WORD*)0x5ff684;
+			DWORD* time = (DWORD*)0x602760;
+			WORD* life1 = (WORD*)0x5ff5a0;
+			WORD* life2 = (WORD*)0x5ff684;
 			sprintf(str, "frm=%4d cnt=%4d rndcnt=%3d time=%2d life%d-%d : %08x\n",
 				g_replay.m_frameCount, *GGXX_FRAMECOUNTER, *GGXX_RANDOMCOUNTER,
 				*GGXX_TIME, *GGXX_1PLIFE, *GGXX_2PLIFE,
 				**GGXX_ggnv_InputDataPtr);
-			
+
 			ENTERCS(&g_csLogOut);
 			if (strlen(g_keyLog) + strlen(str) < LOG_SIZE) strcat(g_keyLog, str);
 			LEAVECS(&g_csLogOut);
-	#endif //DEBUG_OUTPUT_KEY
+#endif //DEBUG_OUTPUT_KEY
 		}
 		else if (g_setting.enableNet == false)	/* Replay,äœêÌà»äO(Netñ≥å¯) */
 		{
@@ -780,7 +748,7 @@ void ggn_input(void)
 			int slow = 0;
 			while (g_netMgr->m_connect &&
 				((g_netMgr->m_key[g_netMgr->m_delay - 1] & 0x0000FFFF) == 0x0000FFFF ||
-				 (g_netMgr->m_key[g_netMgr->m_delay - 1] & 0xFFFF0000) == 0xFFFF0000))
+					(g_netMgr->m_key[g_netMgr->m_delay - 1] & 0xFFFF0000) == 0xFFFF0000))
 			{
 				if (slow % 5 == 0)
 				{
@@ -788,7 +756,7 @@ void ggn_input(void)
 				}
 
 				Sleep(3);
-				
+
 				/* àÍíËéûä‘åoâﬂÇµÇƒÇ‡ïúãAÇµÇ»ÇØÇÍÇŒêÿíf */
 				if (g_netMgr->m_recvSuspend == true && slow >= TIMEOUT_KEY2)
 				{
@@ -818,11 +786,11 @@ void ggn_input(void)
 
 			for (int i = g_netMgr->m_queueSize - 1; i > 0; i--)
 			{
-				g_netMgr->m_key[i]		= g_netMgr->m_key[i - 1];
-				g_netMgr->m_syncChk[i]	= g_netMgr->m_syncChk[i - 1];
+				g_netMgr->m_key[i] = g_netMgr->m_key[i - 1];
+				g_netMgr->m_syncChk[i] = g_netMgr->m_syncChk[i - 1];
 			}
-			g_netMgr->m_key[0]		= **GGXX_ggnv_InputDataPtr;
-			g_netMgr->m_syncChk[0]	= 0;
+			g_netMgr->m_key[0] = **GGXX_ggnv_InputDataPtr;
+			g_netMgr->m_syncChk[0] = 0;
 
 #if DEBUG_INQUIRY_MODE
 			// ÉfÉbÉhÉAÉìÉOÉãÉeÉXÉgóp
@@ -878,7 +846,7 @@ void ggn_input(void)
 				**GGXX_ggnv_InputDataPtr = g_netMgr->m_key[g_netMgr->m_delay];
 
 				WORD sync = g_netMgr->m_syncChk[g_netMgr->m_delay];
-				if (g_netMgr->m_suspend == false && g_netMgr->m_recvSuspend == false && (sync&0xff) != (sync>>8))
+				if (g_netMgr->m_suspend == false && g_netMgr->m_recvSuspend == false && (sync & 0xff) != (sync >> 8))
 				{
 					/* ìØä˙ÉYÉå */
 					g_netMgr->setErrMsg("SYNC ERROR!!");
@@ -945,7 +913,7 @@ void ggn_input(void)
 
 	// ÉäÉvÉåÉCÇÃÉXÉLÉbÉv
 #if !TESTER
-	*GGXX_ggnv_render_off = 0;
+	* GGXX_ggnv_render_off = 0;
 	if (*GGXX_MODE1 & 0xc00000 && *GGXX_MODE2 == 6)
 	{
 		if (g_replay.m_skipFrame > 1) *GGXX_ggnv_render_off = 1;
@@ -968,8 +936,8 @@ void ggn_input(void)
 
 			replaceUserPalette(sm_pal[1], sm_pal[2], &sm_pal[3]);
 
-			DWORD pal1P = (DWORD)g_myPalette[*GGXX_1PCHARA-1][*GGXX_1PCOLOR];
-			DWORD pal2P = (DWORD)g_myPalette[*GGXX_2PCHARA-1][*GGXX_2PCOLOR];
+			DWORD pal1P = (DWORD)g_myPalette[*GGXX_1PCHARA - 1][*GGXX_1PCOLOR];
+			DWORD pal2P = (DWORD)g_myPalette[*GGXX_2PCHARA - 1][*GGXX_2PCOLOR];
 			if (pal1P)
 			{
 				_asm
@@ -1007,7 +975,7 @@ void ggn_input(void)
 		}
 	}
 #endif
-	
+
 #if _DEBUG
 	static bool space = false;
 	if (GetForegroundWindow() == *GGXX_HWND && (GetAsyncKeyState(VK_F2) & 0x80000000))
@@ -1022,14 +990,14 @@ void ggn_input(void)
 DWORD ggn_getPalette(DWORD p_info, DWORD p_pidx, DWORD p_side)
 {
 	int cid = *((WORD*)p_info);
-	
+
 	/* ÉfÉtÉHÉãÉgÉpÉåÉbÉg */
 	DWORD palList = *((DWORD*)(0x5d2400 + cid * 4));
-	void* defpal  = (palList) ? *((void**)(palList + p_pidx * 4)) : NULL;
+	void* defpal = (palList) ? *((void**)(palList + p_pidx * 4)) : NULL;
 
 	if (*GGXX_MODE1 & 0x200000)	// NetVs
 	{
-		if (g_netMgr->m_playSide == p_side+1)
+		if (g_netMgr->m_playSide == p_side + 1)
 		{
 			if (g_myPalette[cid - 1][p_pidx])
 			{
@@ -1125,7 +1093,7 @@ bool ggn_procNetVS(void)
 	g_netMgr->m_lobbyFrame++;
 
 	int input = (*GGXX_1PJDOWN & 0xf300) | (*GGXX_2PJDOWN & 0xf300);
-	static int pressKeyTime[6] = {0,0,0,0,0,0};
+	static int pressKeyTime[6] = { 0,0,0,0,0,0 };
 	for (int i = 0; i < 6; i++)
 	{
 		int key;
@@ -1155,9 +1123,9 @@ bool ggn_procNetVS(void)
 		else pressKeyTime[i] = 0;
 	}
 
-/* ï`âÊ */
-	GGXX_DrawText2("VS NET", 40, 53, 5);
-	
+	/* ï`âÊ */
+	GGXX_DrawText2("LOBBY", 40, 53, 5);
+
 	ENTERCS(&g_netMgr->m_csNode);
 
 	static int c1 = 0, c2 = 0x08;
@@ -1171,14 +1139,14 @@ bool ggn_procNetVS(void)
 		GGXX_DrawArrowMark(8, -5, 360, c1 + 1);
 	}
 	if (c1 == 0xe0) c2 = -0x08;
-	if (c1 == 0x00) c2 =  0x08;
+	if (c1 == 0x00) c2 = 0x08;
 	c1 += c2;
 
 	LEAVECS(&g_netMgr->m_csNode);
 
 	if (g_netMgr->m_watch == false)
 	{
-	/* ì¸óÕ */
+		/* ì¸óÕ */
 		if (input & 0x0010)			/* Å™ÉLÅ[ */
 		{
 			if (g_vsnet.m_menu_visible)
@@ -1369,7 +1337,7 @@ bool ggn_procNetVS(void)
 				}
 
 				GGXX_PlayCmnSound(0x3B);
-				
+
 				ENTERCS(&g_netMgr->m_csNode);
 				g_nodeMgr->sortNodeList(g_vsnet.m_sortType);
 				LEAVECS(&g_netMgr->m_csNode);
@@ -1381,7 +1349,7 @@ bool ggn_procNetVS(void)
 
 		// ëŒêÌèÓïÒÇÃóvãÅ
 		// êÊÇ…Idle, WatchÉmÅ[ÉhÇ…ëŒÇµÇƒóvãÅÇµÅAìæÇÁÇÍÇ»ÇØÇÍÇŒíºê⁄óvãÅÇ∑ÇÈ
-		
+
 		if (g_vsnet.m_selectItemIdx < g_nodeMgr->getNodeCount() && g_netMgr->m_lobbyFrame >= 30 &&
 			g_vsnet.m_menu_visible && g_vsnet.m_menu_cursor == 0)
 		{
@@ -1393,18 +1361,18 @@ bool ggn_procNetVS(void)
 			}
 		}
 
-	/* ÉlÉbÉgÉèÅ[ÉN */
+		/* ÉlÉbÉgÉèÅ[ÉN */
 		static bool oldConnect = false;
 		if (g_netMgr->m_connect && !oldConnect)
 		{
 			/* ééçáäJén */
 			if (useLobbyServer()) enterServer(1);
-			
+
 			g_netMgr->setErrMsg("");
 
 			GGXX_PlayCmnSound(0x39);
-			*GGXX_MODE1		= 0x200803;
-			*GGXX_MODE2		= 0x0f;
+			*GGXX_MODE1 = 0x200803;
+			*GGXX_MODE2 = 0x0f;
 			GGXX_InitBattleChara(0);
 			GGXX_InitBattleChara(1);
 
@@ -1417,8 +1385,8 @@ bool ggn_procNetVS(void)
 			if (g_netMgr->m_playSide == 1)
 			{
 				getNameTrip(pinf.nametrip);
-				pinf.rank  = g_setting.rank;
-				pinf.wins  = g_setting.wins;
+				pinf.rank = g_setting.rank;
+				pinf.wins = g_setting.wins;
 				pinf.ex = g_setting.useEx;
 				pinf.oldcs = g_oldCS;
 				pinf.round = g_setting.rounds;	/* é©ï™Ç©ÇÁì¸ÇÈèÍçáÇÕégópÇµÇ»Ç¢Ç™Åc */
@@ -1439,10 +1407,10 @@ bool ggn_procNetVS(void)
 				__strncpy(g_enemyInfo.m_name, pinf.nametrip, 29);
 				g_enemyInfo.m_rank = pinf.rank;
 				g_enemyInfo.m_wins = pinf.wins;
-				g_enemyInfo.m_ex  = pinf.ex;
+				g_enemyInfo.m_ex = pinf.ex;
 				*GGXX_CSSELECT_1P = g_oldCS;
 				*GGXX_CSSELECT_2P = pinf.oldcs;
-				round			  = pinf.round;
+				round = pinf.round;
 
 				// å›ä∑ï€Ç¬ÇΩÇﬂédï˚Ç»Ç≠ÉmÅ[ÉhåüçıÇµÅAExÇ∆BroadcastÇÃÉIÉvÉVÉáÉìÇéÊìæÇ∑ÇÈ
 				// ÉvÉåÉCÉÑÅ[èÓïÒÇÃëóêMÇ…ÉuÉçÉbÉNì]ëóÇégÇ§ïKóvÇ‡ñ≥Ç≠ÅA
@@ -1472,10 +1440,10 @@ bool ggn_procNetVS(void)
 				__strncpy(g_enemyInfo.m_name, pinf.nametrip, 29);
 				g_enemyInfo.m_rank = pinf.rank;
 				g_enemyInfo.m_wins = pinf.wins;
-				g_enemyInfo.m_ex  = pinf.ex;
+				g_enemyInfo.m_ex = pinf.ex;
 				*GGXX_CSSELECT_1P = pinf.oldcs;
 				*GGXX_CSSELECT_2P = g_oldCS;
-				round		= g_setting.rounds;
+				round = g_setting.rounds;
 
 				// å›ä∑ï€Ç¬ÇΩÇﬂédï˚Ç»Ç≠ÉmÅ[ÉhåüçıÇµÅAExÇ∆BroadcastÇÃÉIÉvÉVÉáÉìÇéÊìæÇ∑ÇÈ
 				// ÉvÉåÉCÉÑÅ[èÓïÒÇÃëóêMÇ…ÉuÉçÉbÉNì]ëóÇégÇ§ïKóvÇ‡ñ≥Ç≠ÅA
@@ -1495,12 +1463,12 @@ bool ggn_procNetVS(void)
 				g_enemyInfo.m_gameCount = g_nodeMgr->getNode(nodeidx)->m_gamecount + 1;
 
 				getNameTrip(pinf.nametrip);
-				pinf.rank  = g_setting.rank;
-				pinf.wins  = g_setting.wins;
+				pinf.rank = g_setting.rank;
+				pinf.wins = g_setting.wins;
 				pinf.ex = g_setting.useEx;
 				pinf.oldcs = g_oldCS;
 				pinf.round = g_setting.rounds;	/* é©ï™ÇÃÉãÅ[ÉãÇ…è]ÇÌÇπÇÈ */
-				
+
 				if (g_netMgr->sendDataBlock(Block_PlayerInfo, (char*)&pinf, sizeof(SBlock_PlayerInfo), TIMEOUT_BLOCK) == false)
 				{
 					g_netMgr->disconnect("send block playerinfo");
@@ -1508,7 +1476,7 @@ bool ggn_procNetVS(void)
 				}
 				DBGOUT_NET("send block playerinfo ok!\n");
 			}
-			
+
 			g_setting.totalBattle++;
 
 			// ExÇÃâ¬ïsâ¬Çê›íË
@@ -1527,7 +1495,7 @@ bool ggn_procNetVS(void)
 #if 1 // óêì¸ÉGÉtÉFÉNÉg
 			// 0x440590ÇÅumov dword ptr ds:[5CDFB0], 0FÅvÇ∆èCê≥
 			// 0x4405a5ÇNOPÇ…èCê≥
-			*GGXX_MODE2		= 0x0a;
+			* GGXX_MODE2 = 0x0a;
 			_asm
 			{
 				push 0x00596f68		// "ITBT"
@@ -1555,7 +1523,7 @@ bool ggn_procNetVS(void)
 		}
 
 		/* ééçáäJén */
-		if (g_netMgr->m_watchRecvSize >= REPLAY_HEADER_SIZE + sizeof(DWORD)*60)	// 60ÉtÉåÅ[ÉÄíˆìxÇÃó]óT
+		if (g_netMgr->m_watchRecvSize >= REPLAY_HEADER_SIZE + sizeof(DWORD) * 60)	// 60ÉtÉåÅ[ÉÄíˆìxÇÃó]óT
 		{
 			/* ééçáäJén */
 			if (useLobbyServer()) enterServer(1);
@@ -1564,20 +1532,20 @@ bool ggn_procNetVS(void)
 			g_replay.m_frameCount = 0;
 
 			g_netMgr->m_suspend = false;
-			
+
 			g_netMgr->setErrMsg("");
 
 			GGXX_PlayCmnSound(0x39);
-			*GGXX_MODE1		= 0x800803;
-			*GGXX_MODE2		= 0x11;
+			*GGXX_MODE1 = 0x800803;
+			*GGXX_MODE2 = 0x11;
 			GGXX_InitBattle();
 			GGXX_InitBattleChara(0);
 			GGXX_InitBattleChara(1);
-			
+
 			int chara1P = g_replay.m_data.chara1P;
 			int chara2P = g_replay.m_data.chara2P;
 			int stageID = g_replay.m_data.battleStage;
-			
+
 			if (g_replay.m_data.round == 3)	*GGXX_ROUND = 2;
 			else							*GGXX_ROUND = 3;
 
@@ -1585,14 +1553,14 @@ bool ggn_procNetVS(void)
 			{
 				push 0
 				push 0	// color
-				push dword ptr ds:[chara1P]	// chara
+				push dword ptr ds : [chara1P]	// chara
 				push 0
 				mov eax, 0x45edd0
 				call eax
-				
+
 				push 0
 				push 0	// color
-				push dword ptr ds:[chara2P]	// chara
+				push dword ptr ds : [chara2P]	// chara
 				push 1
 				mov eax, 0x45edd0
 				call eax
@@ -1628,7 +1596,7 @@ void ggn_startCS(void)
 		/* ÉXÉeÅ[ÉWÉZÉåÉNÉ^Å[ÇÉNÉäÉA */
 		*GGXX_STAGESELECTER = 0;
 
-		for (int i = 0; i < 10; i++) *(GGXX_RANDOMCSLOG+i) = 0xFFFFFFFF;
+		for (int i = 0; i < 10; i++) *(GGXX_RANDOMCSLOG + i) = 0xFFFFFFFF;
 		*GGXX_RANDOMCSLOGPOS = 0;
 
 		ggn_syncRandomTable(0);
@@ -1667,7 +1635,7 @@ DWORD ggn_vsLoadCompleted(void)
 	{
 		/* é©ï™Ç™ÉçÅ[ÉhäÆóπÇ…Ç»Ç¡ÇΩÇ±Ç∆ÇëäéËÇ…ì`Ç¶ÇÈ */
 		if (g_netMgr->m_vsloadFrame % 10 == 0) DBGOUT_NET("vsload waiting = %d\n", g_netMgr->m_vsloadFrame);
-		if (g_netMgr->m_vsloadFrame % 5  == 0) g_netMgr->send_vsLoadCompleted(); /* 5ÉtÉåÅ[ÉÄÇ…1âÒëóêM */
+		if (g_netMgr->m_vsloadFrame % 5 == 0) g_netMgr->send_vsLoadCompleted(); /* 5ÉtÉåÅ[ÉÄÇ…1âÒëóêM */
 		g_netMgr->m_vsloadFrame++;
 
 		/* VSNETÇÃèÍçáëoï˚Ç™ÉçÅ[ÉhäÆóπÇµÇΩéûì_Ç≈ÉfÉÇÇèIóπÇ∑ÇÈÅBShortCutÇÃon/offÇ…ä÷ÇÌÇÁÇ∏ÅAÉLÅ[ì¸óÕÇÕë“ÇΩÇ»Ç¢ */
@@ -1691,7 +1659,7 @@ void ggn_startBattle(void)
 	if (*GGXX_MODE1 & 0x200000) // NetVs
 	{
 		DBGOUT_NET("ggn_startBattle...\n");
-		
+
 		/* ëIëÉLÉÉÉâÇï€ë∂ */
 		g_oldCS = (g_netMgr->m_playSide == 1) ? *GGXX_CSSELECT_1P : *GGXX_CSSELECT_2P;
 
@@ -1699,10 +1667,10 @@ void ggn_startBattle(void)
 		char* palPtr2P = NULL;
 		if (g_netMgr->m_playSide == 1)
 		{
-			if (g_myPalette[*GGXX_1PCHARA-1][*GGXX_1PCOLOR])
+			if (g_myPalette[*GGXX_1PCHARA - 1][*GGXX_1PCOLOR])
 			{
 				/* é©çÏpaletteÇ™Ç†ÇÍÇŒÇªÇÍÇëóêM */
-				palPtr1P = (char*)g_myPalette[*GGXX_1PCHARA-1][*GGXX_1PCOLOR];
+				palPtr1P = (char*)g_myPalette[*GGXX_1PCHARA - 1][*GGXX_1PCOLOR];
 			}
 			else
 			{
@@ -1713,7 +1681,7 @@ void ggn_startBattle(void)
 			palPtr2P = (char*)g_enemyInfo.m_palette;
 
 			/* ëŒêÌëäéËÇ…ÉpÉåÉbÉgÇëóêM */
-			if (g_netMgr->sendDataBlock(Block_Palette, palPtr1P, PALLEN*4, TIMEOUT_BLOCK) == false)
+			if (g_netMgr->sendDataBlock(Block_Palette, palPtr1P, PALLEN * 4, TIMEOUT_BLOCK) == false)
 			{
 				g_netMgr->disconnect("send block  palette");
 				return;
@@ -1721,7 +1689,7 @@ void ggn_startBattle(void)
 			DBGOUT_NET("send block  palette ok!\n");
 
 			/* ëŒêÌëäéËÇÃÉpÉåÉbÉgÇéÛêM */
-			if (g_netMgr->recvDataBlock(Block_Palette, palPtr2P, PALLEN*4, TIMEOUT_BLOCK) == false)
+			if (g_netMgr->recvDataBlock(Block_Palette, palPtr2P, PALLEN * 4, TIMEOUT_BLOCK) == false)
 			{
 				g_netMgr->disconnect("recv blockpalette");
 				return;
@@ -1730,10 +1698,10 @@ void ggn_startBattle(void)
 		}
 		else
 		{
-			if (g_myPalette[*GGXX_2PCHARA-1][*GGXX_2PCOLOR])
+			if (g_myPalette[*GGXX_2PCHARA - 1][*GGXX_2PCOLOR])
 			{
 				/* é©çÏpaletteÇ™Ç†ÇÍÇŒÇªÇÍÇëóêM */
-				palPtr2P = (char*)g_myPalette[*GGXX_2PCHARA-1][*GGXX_2PCOLOR];
+				palPtr2P = (char*)g_myPalette[*GGXX_2PCHARA - 1][*GGXX_2PCOLOR];
 			}
 			else
 			{
@@ -1744,7 +1712,7 @@ void ggn_startBattle(void)
 			palPtr1P = (char*)g_enemyInfo.m_palette;
 
 			/* ëŒêÌëäéËÇÃÉpÉåÉbÉgÇéÛêM */
-			if (g_netMgr->recvDataBlock(Block_Palette, palPtr1P, PALLEN*4, TIMEOUT_BLOCK) == false)
+			if (g_netMgr->recvDataBlock(Block_Palette, palPtr1P, PALLEN * 4, TIMEOUT_BLOCK) == false)
 			{
 				g_netMgr->disconnect("recv blockpalette");
 				return;
@@ -1752,17 +1720,17 @@ void ggn_startBattle(void)
 			DBGOUT_NET("recv blockpalette ok!\n");
 
 			/* ëŒêÌëäéËÇ…ÉpÉåÉbÉgÇëóêM */
-			if (g_netMgr->sendDataBlock(Block_Palette, palPtr2P, PALLEN*4, TIMEOUT_BLOCK) == false)
+			if (g_netMgr->sendDataBlock(Block_Palette, palPtr2P, PALLEN * 4, TIMEOUT_BLOCK) == false)
 			{
 				g_netMgr->disconnect("send block  palette");
 				return;
 			}
 			DBGOUT_NET("send block  palette ok!\n");
 		}
-		
+
 		/* ÉpÉåÉbÉgÇreplayÇ…ï€ë∂ */
-		memcpy(g_replay.m_data.palette1P, palPtr1P, PALLEN*4);
-		memcpy(g_replay.m_data.palette2P, palPtr2P, PALLEN*4);
+		memcpy(g_replay.m_data.palette1P, palPtr1P, PALLEN * 4);
+		memcpy(g_replay.m_data.palette2P, palPtr2P, PALLEN * 4);
 
 		g_netMgr->resume();
 	}
@@ -1838,7 +1806,7 @@ void ggn_softReset(void)
 	{
 		g_netMgr->m_networkEnable = false;
 		g_netMgr->disconnect("softreset");
-		
+
 		g_netMgr->m_lobbyFrame = -1;
 
 		if (useLobbyServer()) leaveServer();
@@ -1908,11 +1876,11 @@ void ggn_drawCSPlayerName(void)
 void ggn_drawRankAndWin(DWORD p_side)
 {
 	if ((*GGXX_MODE1 & 0xe00000) == 0) return;
-	
+
 	char rank[32];
 	if (*GGXX_MODE1 & 0x200000)
 	{
-		if (g_netMgr->m_playSide == p_side+1)
+		if (g_netMgr->m_playSide == p_side + 1)
 		{
 			sprintf(rank, "RANK:%c WIN:%d", getRankChar(g_setting.rank), g_setting.wins);
 		}
@@ -1952,14 +1920,14 @@ void ggn_drawRankAndWin(DWORD p_side)
 	{
 		// 1P
 		GGXX_DrawText1Ex(rank, 40, 3, 8.0f, 0xFFFFFFFF);
-		
+
 		/* ÉGÉâÅ[ÉÅÉbÉZÅ[ÉWÇ™Ç†ÇÍÇŒï\é¶ */
 		if (g_netMgr->m_errMsg[0] != '\0') GGXX_DrawText1Ex(g_netMgr->m_errMsg, 320 - strlen(g_netMgr->m_errMsg) * 6, 240, 1.0f, 0xFFFFFFFF);
 	}
 	else
 	{
 		// 2P
-		GGXX_DrawText1Ex(rank, 640 -  40 - strlen(rank) * 12, 3, 8.0f, 0xFFFFFFFF);
+		GGXX_DrawText1Ex(rank, 640 - 40 - strlen(rank) * 12, 3, 8.0f, 0xFFFFFFFF);
 	}
 }
 
@@ -1976,7 +1944,7 @@ void ggn_endBattle(void)
 		if (g_netMgr->m_playSide == 1 && *GGXX_WINCOUNT1P > *GGXX_WINCOUNT2P) win = 1;
 		else if (g_netMgr->m_playSide == 2 && *GGXX_WINCOUNT2P > *GGXX_WINCOUNT1P) win = 1;
 		else if (*GGXX_WINCOUNT1P == *GGXX_WINCOUNT2P) win = 2;
-		
+
 		if (win == 1)
 		{
 			g_setting.wins++;
@@ -1993,7 +1961,7 @@ void ggn_endBattle(void)
 		}
 
 		writeSettingFile();
-	
+
 		// ÉäÉvÉåÉCÇ…èIí[Çïtâ¡Ç∑ÇÈ
 		g_netMgr->disconnect("endbattle");
 	}
@@ -2009,7 +1977,7 @@ bool ggn_procReplay(void)
 	g_netMgr->m_lobbyFrame++;
 
 	int input = (*GGXX_1PJDOWN & 0xf300) | (*GGXX_2PJDOWN & 0xf300);
-	static int pressKeyTime[6] = {0,0,0,0,0,0};
+	static int pressKeyTime[6] = { 0,0,0,0,0,0 };
 	for (int i = 0; i < 6; i++)
 	{
 		int key;
@@ -2038,8 +2006,8 @@ bool ggn_procReplay(void)
 		}
 		else pressKeyTime[i] = 0;
 	}
-	
-/* ï`âÊ */
+
+	/* ï`âÊ */
 	GGXX_DrawText2("REPLAY", 40, 53, 5);
 
 	static int c1 = 0, c2 = 0x08;
@@ -2053,10 +2021,10 @@ bool ggn_procReplay(void)
 		GGXX_DrawArrowMark(8, -5, 410, c1 + 1);
 	}
 	if (c1 == 0xe0) c2 = -0x08;
-	if (c1 == 0x00) c2 =  0x08;
+	if (c1 == 0x00) c2 = 0x08;
 	c1 += c2;
 
-/* ì¸óÕ */
+	/* ì¸óÕ */
 	if (input & 0x0010)			/* Å™ÉLÅ[ */
 	{
 		if (g_replay.m_selectItemIdx > 0)
@@ -2153,23 +2121,23 @@ bool ggn_procReplay(void)
 						repsize = zfsize(fp);
 						fclose(fp);
 
-						g_replay.m_data.battleStage	= rep109->battleStage;
-						g_replay.m_data.round		= 5;
-						g_replay.m_data.time		= GGXX_TIME99;
+						g_replay.m_data.battleStage = rep109->battleStage;
+						g_replay.m_data.round = 5;
+						g_replay.m_data.time = GGXX_TIME99;
 
 						__strncpy(g_replay.m_data.name1P, rep109->name1P, 19);
-						g_replay.m_data.rank1P	= rep109->rank1P;
-						g_replay.m_data.wins1P	= rep109->wins1P;
-						g_replay.m_data.chara1P	= rep109->chara1P;
-						g_replay.m_data.ex1P	= rep109->ex1P;
-						g_replay.m_data.voice1P	= rep109->voice1P;
+						g_replay.m_data.rank1P = rep109->rank1P;
+						g_replay.m_data.wins1P = rep109->wins1P;
+						g_replay.m_data.chara1P = rep109->chara1P;
+						g_replay.m_data.ex1P = rep109->ex1P;
+						g_replay.m_data.voice1P = rep109->voice1P;
 
 						__strncpy(g_replay.m_data.name2P, rep109->name2P, 19);
-						g_replay.m_data.rank2P	= rep109->rank2P;
-						g_replay.m_data.wins2P	= rep109->wins2P;
-						g_replay.m_data.chara2P	= rep109->chara2P;
-						g_replay.m_data.ex2P	= rep109->ex2P;
-						g_replay.m_data.voice2P	= rep109->voice2P;
+						g_replay.m_data.rank2P = rep109->rank2P;
+						g_replay.m_data.wins2P = rep109->wins2P;
+						g_replay.m_data.chara2P = rep109->chara2P;
+						g_replay.m_data.ex2P = rep109->ex2P;
+						g_replay.m_data.voice2P = rep109->voice2P;
 
 						memcpy(g_replay.m_data.keySetting1P, rep109->keySetting1P, 0x18);
 						memcpy(g_replay.m_data.keySetting2P, rep109->keySetting2P, 0x18);
@@ -2177,7 +2145,7 @@ bool ggn_procReplay(void)
 						memcpy(g_replay.m_data.palette1P, rep109->palette1P, 0x410);
 						memcpy(g_replay.m_data.palette2P, rep109->palette2P, 0x410);
 						memcpy(g_replay.m_data.inputData, rep109->inputData, repsize);
-						
+
 						delete rep109;
 					}
 					else
@@ -2198,22 +2166,22 @@ bool ggn_procReplay(void)
 						g_replay.m_frameCount = 0;
 
 						g_netMgr->m_suspend = false;
-						
+
 						g_netMgr->setErrMsg("");
 
 						GGXX_PlayCmnSound(0x39);
-						*GGXX_MODE1		= 0x400803;
-						*GGXX_MODE2		= 0x11;
+						*GGXX_MODE1 = 0x400803;
+						*GGXX_MODE2 = 0x11;
 						GGXX_InitBattle();
 						GGXX_InitBattleChara(0);
 						GGXX_InitBattleChara(1);
 
 						Sleep(500);
-						
+
 						int chara1P = g_replay.m_data.chara1P;
 						int chara2P = g_replay.m_data.chara2P;
 						int stageID = g_replay.m_data.battleStage;
-						
+
 						if (g_replay.m_data.round == 3)	*GGXX_ROUND = 2;
 						else						*GGXX_ROUND = 3;
 
@@ -2221,14 +2189,14 @@ bool ggn_procReplay(void)
 						{
 							push 0
 							push 0	// color
-							push dword ptr ds:[chara1P]	// chara
+							push dword ptr ds : [chara1P]	// chara
 							push 0
 							mov eax, 0x45edd0
 							call eax
-							
+
 							push 0
 							push 0	// color
-							push dword ptr ds:[chara2P]	// chara
+							push dword ptr ds : [chara2P]	// chara
 							push 1
 							mov eax, 0x45edd0
 							call eax
@@ -2286,7 +2254,7 @@ bool ggn_procReplay(void)
 				__strncpy(g_replay.m_curdir, "REPLAY", 255);
 				getReplayFileList(g_replay.m_curdir);
 				g_replay.m_selectItemIdx = 0;
-				g_replay.m_dispItemHead	= 0;
+				g_replay.m_dispItemHead = 0;
 				GGXX_PlayCmnSound(0x3B);
 			}
 
@@ -2303,7 +2271,7 @@ bool ggn_procReplay(void)
 
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -2364,14 +2332,14 @@ void ggn_syncKeySetting(void)
 		memcpy(GGXX_KEYSET_1P, g_replay.m_data.keySetting1P, GGXX_KEYSETSIZE);
 		memcpy(GGXX_KEYSET_2P, g_replay.m_data.keySetting2P, GGXX_KEYSETSIZE);
 	}
-	
+
 	g_netMgr->m_initKeySet = true;
 }
 
 void ggn_startReplay(void)
 {
 	g_netMgr->setErrMsg("");
-	
+
 	g_replay.m_itemPerPage = 20;
 
 	g_replay.m_itemlist.deleteAll();
@@ -2389,7 +2357,7 @@ void ggn_startReplay(void)
 	if (g_replay.m_dispItemHead >= g_replay.m_itemlist.size() - g_replay.m_itemPerPage) g_replay.m_dispItemHead = g_replay.m_itemlist.size() - g_replay.m_itemPerPage;
 	if (g_replay.m_selectItemIdx < 0) g_replay.m_selectItemIdx = 0;
 	if (g_replay.m_dispItemHead < 0) g_replay.m_dispItemHead = 0;
-	
+
 	g_netMgr->m_lobbyFrame = 0;
 }
 
@@ -2409,7 +2377,7 @@ void ggn_endVS(void)
 	if (*GGXX_MODE1 & 0x200000)
 	{
 		DBGOUT_NET("ggn_endVS...\n");
-		
+
 		/*
 		Ç±Ç±Ç≈Ç‡ëäéËÇÃVSLoadÇ™èIÇÌÇÈÇ‹Ç≈ë“Ç¬
 		VSâÊñ Ç™èIÇÌÇÈÇ‹Ç≈Ç…ÉçÅ[ÉhäÆóπÇµÇƒÇ¢Ç»Ç¢Ç∆ggn_vsLoadCompleted()Ç™é¿çsÇ≥ÇÍÇ»Ç¢
@@ -2424,46 +2392,46 @@ void ggn_endVS(void)
 			/* îOÇÃÇΩÇﬂè≠ÇµëóÇ¡ÇƒÇ®Ç≠ */
 			if (g_netMgr->m_vsloadFrame > 30 && g_netMgr->m_recvVSLoadCompleted) break;
 		}
-		
+
 		g_netMgr->m_vsloadFrame = -1;
 
-		g_replay.m_data.battleStage	= *GGXX_BATTLESTAGE;
-		g_replay.m_data.round		= *GGXX_ROUND == 2 ? 3 : 5;
-		g_replay.m_data.time		= GGXX_TIME99;
+		g_replay.m_data.battleStage = *GGXX_BATTLESTAGE;
+		g_replay.m_data.round = *GGXX_ROUND == 2 ? 3 : 5;
+		g_replay.m_data.time = GGXX_TIME99;
 
 		char str[1024];
 		getNameTrip(str);
 		if (g_netMgr->m_playSide == 1)
 		{
 			__strncpy(g_replay.m_data.name1P, str, 29);
-			g_replay.m_data.rank1P		= g_setting.rank;
-			g_replay.m_data.wins1P		= g_setting.wins;
-			g_replay.m_data.chara1P		= *GGXX_1PCHARA;
-			g_replay.m_data.ex1P		= (char)*GGXX_1PEX;
-			g_replay.m_data.voice1P		= (char)*GGXX_1PVOICE;
-			
+			g_replay.m_data.rank1P = g_setting.rank;
+			g_replay.m_data.wins1P = g_setting.wins;
+			g_replay.m_data.chara1P = *GGXX_1PCHARA;
+			g_replay.m_data.ex1P = (char)*GGXX_1PEX;
+			g_replay.m_data.voice1P = (char)*GGXX_1PVOICE;
+
 			__strncpy(g_replay.m_data.name2P, g_enemyInfo.m_name, 29);
-			g_replay.m_data.rank2P		= g_enemyInfo.m_rank;
-			g_replay.m_data.wins2P		= g_enemyInfo.m_wins;
-			g_replay.m_data.chara2P		= *GGXX_2PCHARA;
-			g_replay.m_data.ex2P		= (char)*GGXX_2PEX;
-			g_replay.m_data.voice2P		= (char)*GGXX_2PVOICE;
+			g_replay.m_data.rank2P = g_enemyInfo.m_rank;
+			g_replay.m_data.wins2P = g_enemyInfo.m_wins;
+			g_replay.m_data.chara2P = *GGXX_2PCHARA;
+			g_replay.m_data.ex2P = (char)*GGXX_2PEX;
+			g_replay.m_data.voice2P = (char)*GGXX_2PVOICE;
 		}
 		else
 		{
 			__strncpy(g_replay.m_data.name1P, g_enemyInfo.m_name, 29);
-			g_replay.m_data.rank1P		= g_enemyInfo.m_rank;
-			g_replay.m_data.wins1P		= g_enemyInfo.m_wins;
-			g_replay.m_data.chara1P		= *GGXX_1PCHARA;
-			g_replay.m_data.ex1P		= (char)*GGXX_1PEX;
-			g_replay.m_data.voice1P		= (char)*GGXX_1PVOICE;
+			g_replay.m_data.rank1P = g_enemyInfo.m_rank;
+			g_replay.m_data.wins1P = g_enemyInfo.m_wins;
+			g_replay.m_data.chara1P = *GGXX_1PCHARA;
+			g_replay.m_data.ex1P = (char)*GGXX_1PEX;
+			g_replay.m_data.voice1P = (char)*GGXX_1PVOICE;
 
 			__strncpy(g_replay.m_data.name2P, str, 29);
-			g_replay.m_data.rank2P		= g_setting.rank;
-			g_replay.m_data.wins2P		= g_setting.wins;
-			g_replay.m_data.chara2P		= *GGXX_2PCHARA;
-			g_replay.m_data.ex2P		= (char)*GGXX_2PEX;
-			g_replay.m_data.voice2P		= (char)*GGXX_2PVOICE;
+			g_replay.m_data.rank2P = g_setting.rank;
+			g_replay.m_data.wins2P = g_setting.wins;
+			g_replay.m_data.chara2P = *GGXX_2PCHARA;
+			g_replay.m_data.ex2P = (char)*GGXX_2PEX;
+			g_replay.m_data.voice2P = (char)*GGXX_2PVOICE;
 		}
 		/* Ç±Ç±Ç©ÇÁReplayÇãLò^Ç∑ÇÈ */
 		g_replay.m_repRecording = true;
@@ -2520,15 +2488,15 @@ bool ggn_useSpecialRandom(char* p_data)
 {
 	/* ãLò^óêêîÇégÇ§Ç©ÅH */
 	int id = 0;
-	if (p_data[0] == 0x59 && p_data[12] == 0x1b) id =  1;/* ÉUÉbÉpóHóÏ è¨êŒ */
-	if (p_data[0] == 0x59 && p_data[12] == 0x20) id =  2;/* ÉUÉbÉpóHóÏ î´êAÇ¶ */
-	if (p_data[0] == 0x59 && p_data[12] == 0x21) id =  3;/* ÉUÉbÉpóHóÏ ÉoÉiÉi */
-	if (p_data[0] == 0x4a && p_data[12] == 0x01) id =  4;/* ÉtÉ@ÉEÉXÉg ÇøÇ—ÉtÉ@ÉEÉXÉg */
-	if (p_data[0] == 0x4a && p_data[12] == 0x1f) id =  5;/* ÉtÉ@ÉEÉXÉg ÇøÇ—É|É`Éá */
-	if (p_data[0] == 0x2b && p_data[12] == 0x04) id =  6;/* ÉtÉ@ÉEÉXÉg ÉnÉìÉ}Å[ */
-	if (p_data[0] == 0x2b && p_data[12] == 0x1e) id =  7;/* ÉtÉ@ÉEÉXÉg ì≈ */
-	if (p_data[0] == 0x2b && p_data[12] == 0x06) id =  8;/* ÉtÉ@ÉEÉXÉg îöíe */
-	if (p_data[0] == 0x2b && p_data[12] == 0x03) id =  9;/* ÉtÉ@ÉEÉXÉg ÉhÅ[ÉiÉc */
+	if (p_data[0] == 0x59 && p_data[12] == 0x1b) id = 1;/* ÉUÉbÉpóHóÏ è¨êŒ */
+	if (p_data[0] == 0x59 && p_data[12] == 0x20) id = 2;/* ÉUÉbÉpóHóÏ î´êAÇ¶ */
+	if (p_data[0] == 0x59 && p_data[12] == 0x21) id = 3;/* ÉUÉbÉpóHóÏ ÉoÉiÉi */
+	if (p_data[0] == 0x4a && p_data[12] == 0x01) id = 4;/* ÉtÉ@ÉEÉXÉg ÇøÇ—ÉtÉ@ÉEÉXÉg */
+	if (p_data[0] == 0x4a && p_data[12] == 0x1f) id = 5;/* ÉtÉ@ÉEÉXÉg ÇøÇ—É|É`Éá */
+	if (p_data[0] == 0x2b && p_data[12] == 0x04) id = 6;/* ÉtÉ@ÉEÉXÉg ÉnÉìÉ}Å[ */
+	if (p_data[0] == 0x2b && p_data[12] == 0x1e) id = 7;/* ÉtÉ@ÉEÉXÉg ì≈ */
+	if (p_data[0] == 0x2b && p_data[12] == 0x06) id = 8;/* ÉtÉ@ÉEÉXÉg îöíe */
+	if (p_data[0] == 0x2b && p_data[12] == 0x03) id = 9;/* ÉtÉ@ÉEÉXÉg ÉhÅ[ÉiÉc */
 	if (p_data[0] == 0x2b && p_data[12] == 0x02) id = 10;/* ÉtÉ@ÉEÉXÉg É`ÉáÉR */
 	if (p_data[0] == 0x3b && p_data[12] == 0x14) id = 11;/* É`ÉbÉvÅ@Å@ éËó†åï */
 	if (p_data[0] == 0x51 && p_data[12] == 0x16) id = 12;/* ÉAÉNÉZÉãÅ@ àÍåÇç≈å„ */
@@ -2590,18 +2558,18 @@ void ggn_init(LPDIRECT3DDEVICE8* p_d3dDev)
 	{
 		g_d3dDev = *p_d3dDev;
 		g_d3dfont = new CD3DFont(*p_d3dDev, *GGXX_ENABLEPIXELSHADER ? D3DFMT_A8R8G8B8 : *GGXX_TEXFORMAT);
-		g_dirIcon = new CIcon(g_dllInst ,g_d3dDev, IDI_ICON1, *GGXX_ENABLEPIXELSHADER ? D3DFMT_A8R8G8B8 : *GGXX_TEXFORMAT);
+		g_dirIcon = new CIcon(g_dllInst, g_d3dDev, IDI_ICON1, *GGXX_ENABLEPIXELSHADER ? D3DFMT_A8R8G8B8 : *GGXX_TEXFORMAT);
 	}
-	
+
 	if (*GGXX_FULLSCREEN == 0) // windowÉÇÅ[ÉhéûÇÃÇ›
 	{
 		int w, h;
 		getWindowSize((int)(640.0f * g_iniFileInfo.m_zoomx), (int)(480.0f * g_iniFileInfo.m_zoomy), &w, &h);
 
 		UINT flag = 0;
-		if (g_iniFileInfo.m_posx  == -999 && g_iniFileInfo.m_posy  == -999) flag |= SWP_NOMOVE;
+		if (g_iniFileInfo.m_posx == -999 && g_iniFileInfo.m_posy == -999) flag |= SWP_NOMOVE;
 		if (g_iniFileInfo.m_zoomx == 1.0f && g_iniFileInfo.m_zoomy == 1.0f) flag |= SWP_NOSIZE;
-		
+
 		if (flag == (SWP_NOMOVE | SWP_NOSIZE))
 		{
 			flag = 0;
@@ -2640,25 +2608,25 @@ void ggn_cleanup(void)
 
 void ggn_render(void)
 {
-	char str[256];
+	char str[512];
 	const int LINESIZE = 13;
-	
+
 	g_d3dDev->SetPixelShader(NULL);
 
 	if (*GGXX_MODE1 & 0x200000 && !g_netMgr->m_connect && !(g_netMgr->m_watch && g_replay.m_playing) && g_netMgr->m_lobbyFrame >= 5)
 	{
 		D3DV_GGN	d3dv[4];
-		
+
 		enum
 		{
 			X_NAME = 20,
 			X_RANK = 230,
-			X_WIN  = 265,
-			X_COUNT= 300,
+			X_WIN = 265,
+			X_COUNT = 300,
 			X_PING = 340,
-			X_VER  = 390,
-			X_RND  = 440,
-			X_EX   = 480,
+			X_VER = 390,
+			X_RND = 440,
+			X_EX = 480,
 			X_GALLERY = 520,
 			X_STAT = 590,
 		};
@@ -2685,9 +2653,8 @@ void ggn_render(void)
 		g_d3dfont->drawText("Win", 250, 124, 0xffffff00);
 
 		g_d3dfont->setFont(g_iniFileInfo.m_fontName, g_iniFileInfo.m_fontSize, g_iniFileInfo.m_fontAntialias, FONT_W, 0);
-		sprintf(str, "Åõ - Menu\nÅ¢ - Sort (%s)\nÅ~ - Exit", g_sortstr[g_vsnet.m_sortType]);
+		sprintf(str, "ÅO - Menu\nÅI - Sort (%s)\nÅU - Exit", g_sortstr[g_vsnet.m_sortType]);
 		drawGGXXWindow(str, -1, 470, 94, 620, 140);
-		
 		sprintf(str, ": %s", g_setting.userName);
 		g_d3dfont->drawText(str, 110, 108, 0xffffffff);
 
@@ -2695,9 +2662,9 @@ void ggn_render(void)
 		g_d3dfont->drawText(str, 110, 124, 0xffffffff);
 
 		float point = (float)g_setting.score / 16000.0f;
-		char  sign  = ' ';
+		char  sign = ' ';
 		if (point <= -0.01) sign = '-';
-		if (point >=  0.01) sign = '+';
+		if (point >= 0.01) sign = '+';
 		sprintf(str, ": %c  %c%d%%", getRankChar(g_setting.rank), sign, (int)fabs(point * 100));
 		g_d3dfont->drawText(str, 290, 108, 0xffffffff);
 
@@ -2729,7 +2696,7 @@ void ggn_render(void)
 			d3dv[3].setColor(0x800000ff);
 			g_d3dDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, d3dv, sizeof(D3DV_GGN));
 		}
-		
+
 		int line = 0;
 		for (int i = 0; i < g_nodeMgr->getNodeCount(); i++)
 		{
@@ -2760,7 +2727,7 @@ void ggn_render(void)
 			{
 				argb &= 0x80ffffff;
 			}
-			
+
 			g_d3dfont->drawText(node->m_name, X_NAME, 167 + line * LINESIZE, argb);
 
 			sprintf(str, "%c", (node->m_validInfo & VF_RANK) ? getRankChar(node->m_rank) : '-');
@@ -2769,7 +2736,7 @@ void ggn_render(void)
 			if (node->m_validInfo & VF_WINS) sprintf(str, "%d", node->m_win);
 			else sprintf(str, "-");
 			g_d3dfont->drawText(str, X_WIN, 167 + line * LINESIZE, argb, CD3DFont::Align_Center);
-			
+
 			if (node->m_validInfo & VF_COUNT) sprintf(str, "%d", node->m_gamecount);
 			else sprintf(str, "-");
 			g_d3dfont->drawText(str, X_COUNT, 167 + line * LINESIZE, argb, CD3DFont::Align_Center);
@@ -2778,7 +2745,7 @@ void ggn_render(void)
 			if (ping >= 0) sprintf(str, "%3dms", ping);
 			else sprintf(str, "-----");
 			g_d3dfont->drawText(str, X_PING, 167 + line * LINESIZE, argb, CD3DFont::Align_Center);
-			
+
 			g_d3dfont->drawText(node->m_ver, X_VER, 167 + line * LINESIZE, argb, CD3DFont::Align_Center);
 
 			if (node->m_validInfo & VF_ROUND) sprintf(str, "%d", node->m_round);
@@ -2822,20 +2789,20 @@ void ggn_render(void)
 			case State_Busy_Casting:	strcpy(str, "Busy(Casting)");	break;
 			case State_Busy_Casting_NG:	strcpy(str, "Busy(Casting)");	break;
 			}
-			
+
 			if ((node->m_validInfo & VF_ID) && node->m_deny) strcpy(str, "Denied");
 
 			g_d3dfont->drawText(str, X_STAT, 167 + line * LINESIZE, argb, CD3DFont::Align_Center);
 
 			line++;
 		}
-		
+
 		if (g_vsnet.m_selectItemIdx != -1 && g_vsnet.m_selectItemIdx < g_nodeMgr->getNodeCount())
 		{
 			CNode* selnode = g_nodeMgr->getNode(g_vsnet.m_selectItemIdx);
-		
+
 			drawGGXXWindow(selnode->m_msg, -1, 20, 385, 480, 460);
-		
+
 			if (g_vsnet.m_menu_visible)
 			{
 				// ÉoÉbÉNÇà√Ç≠Ç∑ÇÈ
@@ -2853,22 +2820,22 @@ void ggn_render(void)
 				char str[256] = "";
 				bool playable = selnode->m_state == State_Idle || selnode->m_state == State_Watch_Playable;
 				if (g_vsnet.m_selectItemIdx < g_nodeMgr->getNodeCount() &&
-				   (playable == false ||
-				   selnode->m_deny ||							// ëäéËÇ©ÇÁãëî€
-				   g_denyListMgr->find(selnode->m_id) != -1))	// é©ï™Ç≈ãëî€ñîÇÕÉRÅ[ÉhÇ™INVALID_MID
+					(playable == false ||
+						selnode->m_deny ||							// ëäéËÇ©ÇÁãëî€
+						g_denyListMgr->find(selnode->m_id) != -1))	// é©ï™Ç≈ãëî€ñîÇÕÉRÅ[ÉhÇ™INVALID_MID
 				{
 					if (selnode->m_state == State_Busy_Casting)
 					{
-						if (selnode->m_battleInfoChara[0]-1 >= 0 && selnode->m_battleInfoChara[0]-1 < CHARACOUNT &&
-							selnode->m_battleInfoChara[1]-1 >= 0 && selnode->m_battleInfoChara[1]-1 < CHARACOUNT)
+						if (selnode->m_battleInfoChara[0] - 1 >= 0 && selnode->m_battleInfoChara[0] - 1 < CHARACOUNT &&
+							selnode->m_battleInfoChara[1] - 1 >= 0 && selnode->m_battleInfoChara[1] - 1 < CHARACOUNT)
 						{
 							sprintf_s(str, 256, "Watch game [%s(%c%c) vs %s(%c%c)]\n",
 								selnode->m_battleInfoName[0],
-								g_charaNames[selnode->m_battleInfoChara[0]-1][0],
-								g_charaNames[selnode->m_battleInfoChara[0]-1][1],
+								g_charaNames[selnode->m_battleInfoChara[0] - 1][0],
+								g_charaNames[selnode->m_battleInfoChara[0] - 1][1],
 								selnode->m_battleInfoName[1],
-								g_charaNames[selnode->m_battleInfoChara[1]-1][0],
-								g_charaNames[selnode->m_battleInfoChara[1]-1][1]);
+								g_charaNames[selnode->m_battleInfoChara[1] - 1][0],
+								g_charaNames[selnode->m_battleInfoChara[1] - 1][1]);
 						}
 						else strcpy(str, "Watch game\n");
 					}
@@ -2923,13 +2890,13 @@ void ggn_render(void)
 	else if (*GGXX_MODE1 & 0x400000 && g_replay.m_playing == false && g_netMgr->m_lobbyFrame >= 5)
 	{
 		D3DV_GGN	d3dv[4];
-		
+
 		g_d3dfont->setFont(g_iniFileInfo.m_fontName, g_iniFileInfo.m_fontSize, g_iniFileInfo.m_fontAntialias, FONT_W * 2, 0);
 		g_d3dfont->drawText("Replay File/Directory Name", 20, 150, 0xffffff00);
 		//g_d3dfont->drawText("Version", 580, 150, 0xffffff00, CD3DFont::Align_Center);
 
 		g_d3dfont->drawText("Item Count", 485, 440, 0xffffff00);
-		
+
 		drawGGXXWindow("", -1, 15, 103, 400, 140);
 		g_d3dfont->drawText("Current Directory", 20, 108, 0xffffff00);
 
@@ -2947,7 +2914,7 @@ void ggn_render(void)
 			sprintf(str, "Åõ - Play\nÅ~ - Parent Directory");
 		}
 		drawGGXXWindow(str, -1, 470, 106, 620, 140);
-		
+
 		/* itemcount */
 		if (g_replay.m_itemlist.size() > 0)
 		{
@@ -2979,10 +2946,10 @@ void ggn_render(void)
 
 			if (i < g_replay.m_dispItemHead) continue;
 			if (i >= g_replay.m_dispItemHead + g_replay.m_itemPerPage) break;
-			
+
 			char* fname = (char*)_mbsrchr((BYTE*)g_replay.m_itemlist[i]->fname, '/');
 			if (fname == NULL) continue;
-			
+
 			strcpy(str, fname + 1);
 			g_d3dfont->drawText(str, 36, 167 + line * LINESIZE, argb);
 			if (g_replay.m_itemlist[i]->dir) g_dirIcon->draw(20, 165 + line * LINESIZE, argb);
@@ -2991,7 +2958,7 @@ void ggn_render(void)
 	}
 	else if (g_netMgr->m_connect || g_replay.m_playing)
 	{
-		char* name1P = NULL, *name2P = NULL;
+		char* name1P = NULL, * name2P = NULL;
 
 		if (*GGXX_MODE1 & 0xc00000)
 		{
@@ -3016,7 +2983,7 @@ void ggn_render(void)
 		}
 		if (name1P && name2P)
 		{
-			drawText(name1P,  21, 69, 0xffffffff, CD3DFont::Align_Left);
+			drawText(name1P, 21, 69, 0xffffffff, CD3DFont::Align_Left);
 			drawText(name2P, 621, 69, 0xffffffff, CD3DFont::Align_Right);
 		}
 	}
@@ -3078,20 +3045,20 @@ void ggn_render(void)
 	if (*GGXX_MODE1 & 0x200000 || *GGXX_MODE1 & 0x800000)
 	{
 		D3DV_GGN	d3dv[4];
-		
+
 		d3dv[0].setColor(0x80000000);
 		d3dv[1].setColor(0x80000000);
 		d3dv[2].setColor(0x80000000);
 		d3dv[3].setColor(0x80000000);
 
 		// datÇÃèÓïÒ
-		d3dv[0].setPos(10.0f,  30.0f);
+		d3dv[0].setPos(10.0f, 30.0f);
 		d3dv[1].setPos(110.0f, 30.0f);
-		d3dv[2].setPos(10.0f,  85.0f);
+		d3dv[2].setPos(10.0f, 85.0f);
 		d3dv[3].setPos(110.0f, 85.0f);
 		g_d3dDev->SetTexture(0, NULL);
 		g_d3dDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, d3dv, sizeof(D3DV_GGN));
-		
+
 		sprintf(str, "IgnoreWatchIn = %d\nWatchNode = %d\nIntrusion = %d\nScore = %d\n",
 			g_ignoreWatchIn,
 			g_setting.watchBroadcast ? g_setting.watchMaxNodes : -16,
@@ -3110,18 +3077,18 @@ void ggn_render(void)
 		g_d3dfont->setFont(g_iniFileInfo.m_fontName, g_iniFileInfo.m_fontSize, g_iniFileInfo.m_fontAntialias, FONT_W, 1);
 
 		sprintf(str, "buffering size = %d bytes", g_netMgr->m_watchRecvSize);
-		g_d3dfont->drawText(str, 330, 10 + LINESIZE*0, 0xffffffff, CD3DFont::Align_Left);
+		g_d3dfont->drawText(str, 330, 10 + LINESIZE * 0, 0xffffffff, CD3DFont::Align_Left);
 
 		char addrstr[32];
 
 		sprintf(str, "root1[%d]%s %s", g_netMgr->m_watchRootGameCount[0],
 			g_netMgr->m_watchRootName[0], g_netMgr->getStringFromAddr(&g_netMgr->m_watchRootAddr[0], addrstr));
-		g_d3dfont->drawText(str, 330, 10 + LINESIZE*1, 0xffffffff, CD3DFont::Align_Left);
+		g_d3dfont->drawText(str, 330, 10 + LINESIZE * 1, 0xffffffff, CD3DFont::Align_Left);
 
 		sprintf(str, "root2[%d]%s %s", g_netMgr->m_watchRootGameCount[1],
 			g_netMgr->m_watchRootName[1], g_netMgr->getStringFromAddr(&g_netMgr->m_watchRootAddr[1], addrstr));
-		g_d3dfont->drawText(str, 330, 10 + LINESIZE*2, 0xffffffff, CD3DFont::Align_Left);
-		
+		g_d3dfont->drawText(str, 330, 10 + LINESIZE * 2, 0xffffffff, CD3DFont::Align_Left);
+
 		for (int i = 0; i < WATCH_MAX_CHILD; i++)
 		{
 			DWORD color = 0xffffffff;
@@ -3132,7 +3099,7 @@ void ggn_render(void)
 				g_netMgr->m_watcher[i].m_childCount,
 				g_netMgr->getStringFromAddr(&g_netMgr->m_watcher[i].m_remoteAddr, addrstr),
 				g_netMgr->m_watcher[i].m_sendSize);
-			g_d3dfont->drawText(str, 330, 10 + LINESIZE * (i+4), color, CD3DFont::Align_Left);
+			g_d3dfont->drawText(str, 330, 10 + LINESIZE * (i + 4), color, CD3DFont::Align_Left);
 		}
 	}
 #endif
@@ -3140,38 +3107,16 @@ void ggn_render(void)
 
 void enterServer(bool p_busy)
 {
-	char *server, *script;
+	char* server, * script;
 	getscpiptaddr(server, script);
-	
 	char nametrip[256];
 	getNameTrip(nametrip);
-
-	char buf[1024];
-	std::string radminAddress = getRadminAddress();
-	sprintf(buf, "cmd=enter|port=%d|name=%s|param=%d%02x%d%d%d%d%d%d%c%d|win=%d|radminAddress=%s",
-		g_setting.port, nametrip, p_busy, LOBBY_VER,
-		g_setting.useEx, 0, 0, 0, 0, 0,
-		getRankChar(g_setting.rank), g_setting.delay, g_setting.wins, radminAddress);
-	internet_post(buf, strlen(buf), 1024, server, script);
-
-	/*
-	è≠êîÇÃä€ÇﬂåÎç∑Ç…ÇÊÇÈìØä˙ÉYÉåÇ…ëŒèàÇ∑ÇÈÇΩÇﬂCWÇÉZÉbÉg
-	î≠ê∂èåèÇ™internet_postì‡ÇÃHttpSendRequestÇåƒÇÒÇæèÍçáÇæÇ™
-	ïKÇ∏î≠ê∂Ç∑ÇÈÇÌÇØÇ≈Ç‡Ç»Ç≠Ç±Ç±ÇæÇØÇ≈ÇÕïsà¿
-	îOÇÃÇΩÇﬂggn_input()Ç≈Ç‡çsÇ¢ÅAñàÉtÉåÅ[ÉÄåƒÇŒÇÍÇÈÇÊÇ§Ç…ÇµÇƒÇ®Ç≠
-	*/
+	char response[1024];
+	char command[256];
+	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
+	makePost(command, strlen(command), 1024, server, "/enter", response);
 	SETFCW(DEFAULT_CW);
-
-	/* ÉwÉbÉ_Å[Å`ÉtÉbÉ^Å[ÇÃãÊä‘ÇíäèoÅiñ≥óøéIÇ»Ç«Ç≈ïtâ¡Ç≥ÇÍÇÈâ¬î\ê´Ç™Ç†ÇÈÇΩÇﬂÅj */
-	char* ptr = strstr(buf, "##head##");
-	if (ptr==NULL) return;
-	char* end = strstr(buf, "##foot##");
-	if (end==NULL) return;
-	ptr += 8;
-	*end = '\0';
-	
-	g_nodeMgr->setOwnNode(ptr);
-
+	g_nodeMgr->setOwnNode(response);
 	DBGOUT_NET("enterServer end\n");
 }
 
@@ -3179,7 +3124,7 @@ void readNodeList(void)
 {
 	FILE* fp = fopen(g_setting.scriptAddress, "r");
 	if (fp == NULL) return;
-	
+
 	while (1)
 	{
 		char buf[1024];
@@ -3191,17 +3136,17 @@ void readNodeList(void)
 			*/
 			char temp[1024];
 			int cnt = 0;
-			
+
 			for (int i = 0; i < 1024 && buf[i] != '\0'; i++)
 			{
 				switch (buf[i])
 				{
-				case ' '  : break;
-				case '\t' : break;
-				case ';'  : temp[cnt++] = '\0';   break;
-				case '\n' : temp[cnt++] = '\0';   break;
-				case '\r' : temp[cnt++] = '\0';   break;
-				default   : temp[cnt++] = buf[i]; break;
+				case ' ': break;
+				case '\t': break;
+				case ';': temp[cnt++] = '\0';   break;
+				case '\n': temp[cnt++] = '\0';   break;
+				case '\r': temp[cnt++] = '\0';   break;
+				default: temp[cnt++] = buf[i]; break;
 				}
 				if (temp[cnt - 1] == '\0') break;
 			}
@@ -3217,58 +3162,37 @@ void readNodeList(void)
 bool useLobbyServer(void)
 {
 	int len = strlen(g_setting.scriptAddress);
-	
-	return !(strncmp(&g_setting.scriptAddress[len-4], ".txt", 4) == 0);
+
+	return !(strncmp(&g_setting.scriptAddress[len - 4], ".txt", 4) == 0);
 }
 
 void readServer(void)
 {
-	char *server, *script;
+	char* server, * script;
 	getscpiptaddr(server, script);
 
-	const int bufsize = 1024*1024;
-	char* buf = new char[bufsize]; // 1M
-	sprintf(buf, "cmd=read|");
-	int readsize = internet_post(buf, strlen(buf), bufsize, server, script);
-
-	/*
-	è≠êîÇÃä€ÇﬂåÎç∑Ç…ÇÊÇÈìØä˙ÉYÉåÇ…ëŒèàÇ∑ÇÈÇΩÇﬂCWÇÉZÉbÉg
-	î≠ê∂èåèÇ™internet_postì‡ÇÃHttpSendRequestÇåƒÇÒÇæèÍçáÇæÇ™
-	ïKÇ∏î≠ê∂Ç∑ÇÈÇÌÇØÇ≈Ç‡Ç»Ç≠Ç±Ç±ÇæÇØÇ≈ÇÕïsà¿
-	îOÇÃÇΩÇﬂggn_input()Ç≈Ç‡çsÇ¢ÅAñàÉtÉåÅ[ÉÄåƒÇŒÇÍÇÈÇÊÇ§Ç…ÇµÇƒÇ®Ç≠
-	*/
+	char response[1024];
+	char command[256];
+	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
+	int readsize = makePost(command, strlen(command), 1024, server, "/read", response);
 	SETFCW(DEFAULT_CW);
 
-	/* ÉwÉbÉ_Å[Å`ÉtÉbÉ^Å[ÇÃãÊä‘ÇíäèoÅiñ≥óøéIÇ»Ç«Ç≈ïtâ¡Ç≥ÇÍÇÈâ¬î\ê´Ç™Ç†ÇÈÇΩÇﬂÅj */
-	char* ptr = strstr(buf, "##head##");
-	if (ptr==NULL) { delete buf; return; }
-	char* end = strstr(buf, "##foot##");
-	if (end==NULL) { delete buf; return; }
-	
-	ptr = __mbschr(ptr, '\n');
-	if (ptr) ptr += 1;
-	else { delete buf; return; }
-	*end = '\0';
-
-	/* â¸çsÇéÊÇËèúÇ´ÉmÅ[Éhí«â¡ */
 	int pos = 0;
 	while (pos < readsize)
 	{
-		if (ptr[pos] == '\0') break;
+		if (response[pos] == '\0') break;
 
-		char *ret = __mbschr(&ptr[pos], '\n');
+		char* ret = __mbschr(&response[pos], '\n');
 		if (ret) *ret = '\0';
 
-		/* name@addr:port%paramÇÃå`éÆ */
-		char* name = &ptr[pos];
-		char* dlm1 = __mbschr(&ptr[pos], '@');
-		char* dlm2 = __mbschr(&ptr[pos], '%');
-		char* dlm3 = __mbschr(&ptr[pos], '#');
-		char* addr = dlm1+1;
-		char* prm  = dlm2+1;
-		char* win  = dlm3+1;
+		char* name = &response[pos];
+		char* dlm1 = __mbschr(&response[pos], '@');
+		char* dlm2 = __mbschr(&response[pos], '%');
+		char* dlm3 = __mbschr(&response[pos], '#');
+		char* addr = dlm1 + 1;
+		char* prm = dlm2 + 1;
+		char* win = dlm3 + 1;
 
-		/* ÉçÉrÅ[ÉpÉâÉÅÅ[É^Ç…å›ä∑ê´Ç™ñ≥Ç¢ÉoÅ[ÉWÉáÉìÇñ≥éã */
 		BYTE ver = CHR_HEX2INT(prm[1]) * 16 + CHR_HEX2INT(prm[2]);
 		if (ver == LOBBY_VER)
 		{
@@ -3277,7 +3201,7 @@ void readServer(void)
 				*dlm1 = '\0';
 				*dlm2 = '\0';
 				*dlm3 = '\0';
-				
+
 				ENTERCS(&g_netMgr->m_csNode);
 
 				g_nodeMgr->addNode(addr, name, prm[0] == 1, false);
@@ -3285,42 +3209,34 @@ void readServer(void)
 				LEAVECS(&g_netMgr->m_csNode);
 			}
 		}
-		pos = ret - ptr + 1;
+		pos = ret - response + 1;
 	}
 
-	delete buf;
+	//delete buf;
 
 	DBGOUT_NET("readServer end\n");
 }
 
 void leaveServer(void)
 {
-	char *server, *script;
+	char* server, * script;
 	getscpiptaddr(server, script);
-
 	char nametrip[30];
-	char buf[256];
+	char response[1024];
+	char command[256];
+	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
 	getNameTrip(nametrip);
-	sprintf(buf, "cmd=leave|port=%d|name=%s", g_setting.port, nametrip);
-	internet_post(buf, strlen(buf), 256, server, script);
-
-	/*
-	è≠êîÇÃä€ÇﬂåÎç∑Ç…ÇÊÇÈìØä˙ÉYÉåÇ…ëŒèàÇ∑ÇÈÇΩÇﬂCWÇÉZÉbÉg
-	î≠ê∂èåèÇ™internet_postì‡ÇÃHttpSendRequestÇåƒÇÒÇæèÍçáÇæÇ™
-	ïKÇ∏î≠ê∂Ç∑ÇÈÇÌÇØÇ≈Ç‡Ç»Ç≠Ç±Ç±ÇæÇØÇ≈ÇÕïsà¿
-	îOÇÃÇΩÇﬂggn_input()Ç≈Ç‡çsÇ¢ÅAñàÉtÉåÅ[ÉÄåƒÇŒÇÍÇÈÇÊÇ§Ç…ÇµÇƒÇ®Ç≠
-	*/
+	makePost(command, strlen(command), 256, server, "/leave", response);
 	SETFCW(DEFAULT_CW);
-
 	DBGOUT_NET("leaveServer end\n");
 }
 
-void getscpiptaddr(char* &p_server, char* &p_script)
+void getscpiptaddr(char*& p_server, char*& p_script)
 {
 	static char tmp[256];
 
 	strcpy(tmp, g_setting.scriptAddress);
-	
+
 	p_server = tmp;
 	p_script = NULL;
 	char* p = strchr(tmp, '/');
@@ -3351,9 +3267,9 @@ void replaceUserPalette(int p_chara, int p_pal, char* p_data)
 	DWORD temp[8];
 	for (int k = 0; k < 8; k++)
 	{
-		memcpy(temp, &palette[4 + 8+32*k], 32);
-		memcpy(&palette[4 + 8+32*k], &palette[4 + 16+32*k], 32);
-		memcpy(&palette[4 + 16+32*k], temp, 32);
+		memcpy(temp, &palette[4 + 8 + 32 * k], 32);
+		memcpy(&palette[4 + 8 + 32 * k], &palette[4 + 16 + 32 * k], 32);
+		memcpy(&palette[4 + 16 + 32 * k], temp, 32);
 	}
 	g_myPalette[p_chara][p_pal] = palette;
 }
@@ -3368,7 +3284,7 @@ void readUserPalette(void)
 
 			sprintf(fname, "pal\\%s_%s.pal", g_charaNames[i], g_paletteNames[j]);
 
-			FILE *fp = fopen(fname, "rb");
+			FILE* fp = fopen(fname, "rb");
 			if (fp)
 			{
 				DWORD* palette = new DWORD[PALLEN];
@@ -3384,9 +3300,9 @@ void readUserPalette(void)
 				DWORD temp[8];
 				for (int k = 0; k < 8; k++)
 				{
-					memcpy(temp, &palette[4 + 8+32*k], 32);
-					memcpy(&palette[4 + 8+32*k], &palette[4 + 16+32*k], 32);
-					memcpy(&palette[4 + 16+32*k], temp, 32);
+					memcpy(temp, &palette[4 + 8 + 32 * k], 32);
+					memcpy(&palette[4 + 8 + 32 * k], &palette[4 + 16 + 32 * k], 32);
+					memcpy(&palette[4 + 16 + 32 * k], temp, 32);
 				}
 				g_myPalette[i][j] = palette;
 
@@ -3426,34 +3342,34 @@ void initSetting(void)
 	__strncpy(g_setting.userName, "NONAME", 20);
 	__strncpy(g_setting.trip, "", 10);
 	g_setting.enableNet = 1;
-	g_setting.port		= DEFAULT_PORT;
-	g_setting.delay		= DEFAULT_DELAY;
+	g_setting.port = DEFAULT_PORT;
+	g_setting.delay = DEFAULT_DELAY;
 
 	g_setting.ignoreMisNode = 0;
-	g_setting.ignoreSlow	= 1;
-	g_setting.wait			= 5;
+	g_setting.ignoreSlow = 1;
+	g_setting.wait = 5;
 
-	g_setting.useEx			= 0;
+	g_setting.useEx = 0;
 
-	g_setting.dispInvCombo	= 1;
-	g_setting.showfps		= 0;
-	g_setting.wins			= 0;
-	g_setting.rank			= Rank_F;
-	g_setting.score			= 0;
-	g_setting.totalBattle	= 0;
-	g_setting.totalWin		= 0;
-	g_setting.totalLose		= 0;
-	g_setting.totalDraw		= 0;
-	g_setting.totalError	= 0;
-	g_setting.slowRate		= 0;
-	g_setting.rounds		= 3;
+	g_setting.dispInvCombo = 1;
+	g_setting.showfps = 0;
+	g_setting.wins = 0;
+	g_setting.rank = Rank_F;
+	g_setting.score = 0;
+	g_setting.totalBattle = 0;
+	g_setting.totalWin = 0;
+	g_setting.totalLose = 0;
+	g_setting.totalDraw = 0;
+	g_setting.totalError = 0;
+	g_setting.slowRate = 0;
+	g_setting.rounds = 3;
 
 	memset(g_setting.msg, 0, 256);
 
-	g_setting.watchBroadcast	= 1;
-	g_setting.watchIntrusion	= 0;
-	g_setting.watchSaveReplay	= 0;
-	g_setting.watchMaxNodes		= 1;
+	g_setting.watchBroadcast = 1;
+	g_setting.watchIntrusion = 0;
+	g_setting.watchSaveReplay = 0;
+	g_setting.watchMaxNodes = 1;
 
 	g_scriptCode = 0;
 }
@@ -3474,36 +3390,36 @@ char* getIniFilePath(void)
 void readIniFile(void)
 {
 	char buf[1024];
-	
+
 	::GetPrivateProfileString("Font", "FontName", "", buf, 1024, getIniFilePath());
 	__strncpy(g_iniFileInfo.m_fontName, buf, 255);
-	
-	g_iniFileInfo.m_fontSize			= ::GetPrivateProfileInt("Font", "FontSize", 12, getIniFilePath());
-	if (g_iniFileInfo.m_fontSize <  5) g_iniFileInfo.m_fontSize = 5;
+
+	g_iniFileInfo.m_fontSize = ::GetPrivateProfileInt("Font", "FontSize", 12, getIniFilePath());
+	if (g_iniFileInfo.m_fontSize < 5) g_iniFileInfo.m_fontSize = 5;
 	if (g_iniFileInfo.m_fontSize > 40) g_iniFileInfo.m_fontSize = 40;
 
-	g_iniFileInfo.m_fontAntialias		= (::GetPrivateProfileInt("Font", "Antialias", 0, getIniFilePath()) != 0);
+	g_iniFileInfo.m_fontAntialias = (::GetPrivateProfileInt("Font", "Antialias", 0, getIniFilePath()) != 0);
 
-	g_iniFileInfo.m_posx				= ::GetPrivateProfileInt("Window", "PosX", -999, getIniFilePath());
-	g_iniFileInfo.m_posy				= ::GetPrivateProfileInt("Window", "PosY", -999, getIniFilePath());
+	g_iniFileInfo.m_posx = ::GetPrivateProfileInt("Window", "PosX", -999, getIniFilePath());
+	g_iniFileInfo.m_posy = ::GetPrivateProfileInt("Window", "PosY", -999, getIniFilePath());
 	::GetPrivateProfileString("Window", "ZoomX", "1.0", buf, 1024, getIniFilePath());
-	g_iniFileInfo.m_zoomx				= (float)atof(buf);
+	g_iniFileInfo.m_zoomx = (float)atof(buf);
 	::GetPrivateProfileString("Window", "ZoomY", "1.0", buf, 1024, getIniFilePath());
-	g_iniFileInfo.m_zoomy				= (float)atof(buf);
+	g_iniFileInfo.m_zoomy = (float)atof(buf);
 
-	g_iniFileInfo.m_recvThreadPriority	= ::GetPrivateProfileInt("Network", "ReceiveThreadPriority", 0, getIniFilePath());
+	g_iniFileInfo.m_recvThreadPriority = ::GetPrivateProfileInt("Network", "ReceiveThreadPriority", 0, getIniFilePath());
 	if (g_iniFileInfo.m_recvThreadPriority < -1) g_iniFileInfo.m_recvThreadPriority = -1;
-	if (g_iniFileInfo.m_recvThreadPriority >  1) g_iniFileInfo.m_recvThreadPriority = 1;
+	if (g_iniFileInfo.m_recvThreadPriority > 1) g_iniFileInfo.m_recvThreadPriority = 1;
 
-	g_iniFileInfo.m_recvThreadInterval	= ::GetPrivateProfileInt("Network", "ReceiveThreadInterval", 3, getIniFilePath());
-	if (g_iniFileInfo.m_recvThreadInterval <  1) g_iniFileInfo.m_recvThreadInterval = 1;
+	g_iniFileInfo.m_recvThreadInterval = ::GetPrivateProfileInt("Network", "ReceiveThreadInterval", 3, getIniFilePath());
+	if (g_iniFileInfo.m_recvThreadInterval < 1) g_iniFileInfo.m_recvThreadInterval = 1;
 	if (g_iniFileInfo.m_recvThreadInterval > 16) g_iniFileInfo.m_recvThreadInterval = 16;
 
-	g_iniFileInfo.m_recvThreadMethod	= ::GetPrivateProfileInt("Network", "ReceiveThreadMethod", 0, getIniFilePath());
+	g_iniFileInfo.m_recvThreadMethod = ::GetPrivateProfileInt("Network", "ReceiveThreadMethod", 0, getIniFilePath());
 	if (g_iniFileInfo.m_recvThreadMethod < 0) g_iniFileInfo.m_recvThreadMethod = 0;
 	if (g_iniFileInfo.m_recvThreadMethod > 1) g_iniFileInfo.m_recvThreadMethod = 1;
 
-	g_iniFileInfo.m_maxPacketSize		= ::GetPrivateProfileInt("Network", "MaxPacketSize", 256, getIniFilePath());
+	g_iniFileInfo.m_maxPacketSize = ::GetPrivateProfileInt("Network", "MaxPacketSize", 256, getIniFilePath());
 	if (g_iniFileInfo.m_maxPacketSize < SPacket_WatchData::MINBUFFERSIZE) g_iniFileInfo.m_maxPacketSize = SPacket_WatchData::MINBUFFERSIZE;
 	if (g_iniFileInfo.m_maxPacketSize > SPacket_WatchData::MAXBUFFERSIZE) g_iniFileInfo.m_maxPacketSize = SPacket_WatchData::MAXBUFFERSIZE;
 
@@ -3539,7 +3455,7 @@ void writeIniFile(void)
 	::WritePrivateProfileString("Font", "FontSize", str, getIniFilePath());
 
 	::WritePrivateProfileString("Font", "Antialias", g_iniFileInfo.m_fontAntialias ? "1" : "0", getIniFilePath());
-	
+
 	_itoa(g_iniFileInfo.m_posx, str, 10);
 	::WritePrivateProfileString("Window", "PosX", str, getIniFilePath());
 	_itoa(g_iniFileInfo.m_posy, str, 10);
@@ -3576,15 +3492,15 @@ void getNameTrip(char* p_str)
 	if (strlen(g_setting.trip) > 0)
 	{
 		static char trip[5] = "";
-		
+
 		if (trip[0] == '\0')
 		{
 			/* åªç›ÇÃédólÇ≈ÇÕãNìÆíÜÇ…é©ï™ÇÃTripÉLÅ[Ç™ïœçXÇ≥ÇÍÇÈÇ±Ç∆ÇÕñ≥Ç¢ */
 			char md5[33];
 			getMD5((BYTE*)g_setting.trip, strlen(g_setting.trip), (BYTE*)md5);
-			
+
 			char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-			for (int i = 0; i < 4; i++) trip[i] = table[(md5[i] + md5[8+i] + md5[16+i] + md5[24+i]) % strlen(table)];
+			for (int i = 0; i < 4; i++) trip[i] = table[(md5[i] + md5[8 + i] + md5[16 + i] + md5[24 + i]) % strlen(table)];
 			trip[4] = '\0';
 		}
 		// g_setting.userNameÇÕ20ÉoÉCÉgÇ‹Ç≈ÇµÇ©Ç¢ÇÍÇÁÇÍÇ»Ç¢
@@ -3611,7 +3527,7 @@ void onDisconnect(char* p_cause)
 	/* disconnectÇ≥ÇÍÇΩÇ∆Ç´Ç…åƒÇŒÇÍÇÈ */
 	*GGXX_MODE1 = 0x200000;
 	*GGXX_MODE2 = 0x37;
-	
+
 	//if (useLobbyServer()) enterServer(0);
 }
 
@@ -3620,23 +3536,23 @@ void addScore(char p_mywc, char p_enwc, char p_enRank, WORD p_enwin)
 	if (p_enRank < Rank_S || p_enRank > Rank_F) return;
 
 	int table[2][RankCount][RankCount] = {
-// lose    S    A    B    C    D    E    F (en)
-		-250,-300,-400,-500,-600,-600,-600, // S (me)
-		-150,-200,-300,-400,-500,-600,-600, // A
-		-100,-150,-200,-250,-300,-400,-500, // B
-		 -50,-100,-150,-200,-250,-300,-400, // C
-		 -10, -50,-100,-150,-200,-250,-300, // D
-		 -10, -10, -50,-100,-150,-200,-250, // E
-		 -10, -10, -10, -50,-100,-150,-200, // F
+		// lose    S    A    B    C    D    E    F (en)
+				-250,-300,-400,-500,-600,-600,-600, // S (me)
+				-150,-200,-300,-400,-500,-600,-600, // A
+				-100,-150,-200,-250,-300,-400,-500, // B
+				 -50,-100,-150,-200,-250,-300,-400, // C
+				 -10, -50,-100,-150,-200,-250,-300, // D
+				 -10, -10, -50,-100,-150,-200,-250, // E
+				 -10, -10, -10, -50,-100,-150,-200, // F
 
-// win     S    A    B    C    D    E    F (en)
-		 200, 150, 100,  80,  40,   0,   0, // S (me)
-		 250, 200, 150, 100,  80,  40,   0, // A
-		 300, 350, 200, 150, 100,  80,  40, // B
-		 400, 300, 250, 200, 150, 100,  80, // C
-		 600, 400, 300, 250, 200, 150, 100, // D
-		 800, 600, 400, 300, 250, 200, 150, // E
-		 800, 800, 600, 400, 300, 250, 200, // F
+		// win     S    A    B    C    D    E    F (en)
+				 200, 150, 100,  80,  40,   0,   0, // S (me)
+				 250, 200, 150, 100,  80,  40,   0, // A
+				 300, 350, 200, 150, 100,  80,  40, // B
+				 400, 300, 250, 200, 150, 100,  80, // C
+				 600, 400, 300, 250, 200, 150, 100, // D
+				 800, 600, 400, 300, 250, 200, 150, // E
+				 800, 800, 600, 400, 300, 250, 200, // F
 	};
 
 	int score = 0;
@@ -3665,7 +3581,7 @@ void addScore(char p_mywc, char p_enwc, char p_enRank, WORD p_enwin)
 		g_setting.score = 0;
 		DBGOUT_NET("rank up to %c\n", getRankChar(g_setting.rank));
 	}
-	
+
 	if (g_setting.score <= -16000 && g_setting.rank < Rank_F)
 	{
 		// rank down
@@ -3674,13 +3590,13 @@ void addScore(char p_mywc, char p_enwc, char p_enRank, WORD p_enwin)
 		DBGOUT_NET("rank down to %c\n", getRankChar(g_setting.rank));
 	}
 
-	if (g_setting.score >=  16000) g_setting.score =  16000;
+	if (g_setting.score >= 16000) g_setting.score = 16000;
 	if (g_setting.score <= -16000) g_setting.score = -16000;
 }
 
 char getRankChar(int p_rank)
 {
-	switch(p_rank)
+	switch (p_rank)
 	{
 	case Rank_S: return 'S'; break;
 	case Rank_A: return 'A'; break;
@@ -3721,7 +3637,7 @@ void saveReplayFile(void)
 		name1P[i] = 0;
 		for (i = 0; name2P[i] != 0 && name2P[i] != 'Åü'; i++);
 		name2P[i] = 0;
-		
+
 		SYSTEMTIME systime;
 		GetLocalTime(&systime);
 		char str[1024];
@@ -3735,8 +3651,8 @@ void saveReplayFile(void)
 			{
 				sprintf(str, "%s/%02d%02d%02d-%03d %s(%c%c) vs %s(%c%c).rep", dirPath,
 					systime.wYear, systime.wMonth, systime.wDay, i,
-					name1P, g_charaNames[g_replay.m_data.chara1P-1][0], g_charaNames[g_replay.m_data.chara1P-1][1],
-					name2P, g_charaNames[g_replay.m_data.chara2P-1][0], g_charaNames[g_replay.m_data.chara2P-1][1]);
+					name1P, g_charaNames[g_replay.m_data.chara1P - 1][0], g_charaNames[g_replay.m_data.chara1P - 1][1],
+					name2P, g_charaNames[g_replay.m_data.chara2P - 1][0], g_charaNames[g_replay.m_data.chara2P - 1][1]);
 
 				/* ÉtÉ@ÉCÉãñºÇ…égÇ¶Ç»Ç¢ï∂éöïœä∑ */
 				int len = (int)strlen(str);
@@ -3752,7 +3668,7 @@ void saveReplayFile(void)
 					}
 				}
 
-				FILE *fp = fopen(str, "wb");
+				FILE* fp = fopen(str, "wb");
 				if (fp)
 				{
 					int size = REPLAY_HEADER_SIZE + sizeof(DWORD) * g_replay.m_frameCount;
@@ -3792,7 +3708,7 @@ void getReplayFileList(char* p_dir)
 		{
 			continue;
 		}
-		
+
 		if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
 			ReplayItem* ri = new ReplayItem;
@@ -3850,9 +3766,9 @@ DWORD WINAPI _recvThreadProc(LPVOID lpParameter)
 				while (1)
 				{
 					if (g_nodeMgr->getNodeCount() <= 0) break;
-					
+
 					pingcount = (pingcount + 1) % g_nodeMgr->getNodeCount();
-					
+
 					CNode* node = g_nodeMgr->getNode(pingcount);
 
 					/* nodelistégópÇ≈ñºëOÇ™éÊìæÇ≥ÇÍÇƒÇ¢Ç»ÇØÇÍÇŒÅAñºëOóvãÅ */
@@ -3908,7 +3824,7 @@ DWORD WINAPI _recvThreadProc(LPVOID lpParameter)
 									g_nodeMgr->getNode(i)->m_state == State_NotReady)
 								{
 									g_netMgr->send_nodeaddr115_3(&addr, g_nodeMgr->getNode(i));
-									
+
 									sockaddr_in addr2 = g_netMgr->getAddrFromString(g_nodeMgr->getNode(i)->m_addr);
 									g_netMgr->send_nodeaddr115_3(&addr2, node);
 									send = true;
@@ -3939,7 +3855,7 @@ DWORD WINAPI _recvThreadProc(LPVOID lpParameter)
 		}
 		// ñÒ20msä‘äuÇ≈pingëóÇÈ
 		// êlÇ™ëΩÇ¢Ç∆ÇPêlÇ…ëóÇÈä‘äuÇÕêLÇ—ÇÈ
-		count = (count+1) % (21 / g_iniFileInfo.m_recvThreadInterval);
+		count = (count + 1) % (21 / g_iniFileInfo.m_recvThreadInterval);
 
 		Sleep(g_iniFileInfo.m_recvThreadInterval);
 	}
@@ -3978,12 +3894,12 @@ DWORD WINAPI _lobbyThreadProc(LPVOID lpParameter)
 			}
 		}
 		Sleep(50);
-	}
+			}
 	netMgr->m_lobbyThread_end = true;
 	DBGOUT_LOG("lobby thread end.\n");
 
 	return 0;
-}
+		}
 
 BYTE getSyncCheckValue(void)
 {
@@ -4004,23 +3920,23 @@ BYTE getSyncCheckValue(void)
 			// ÇÊÇËëΩÇ≠ÇÃÉQÅ[ÉÄì‡èÓïÒÇÉVÉìÉNÉGÉâÅ[É`ÉFÉbÉNÇ…égópÇ∑ÇÈ
 			// Ç±ÇÃà◊ÅAåªçsâ“ìÆî≈(1.20-3)à»ëOÇ∆ÇÕëŒêÌÇ≈Ç´Ç»Ç¢ÇÃÇ≈íçà”ÅI
 			value = *GGXX_TIME +
-				*GGXX_1PPOSX + 
-				*GGXX_2PPOSX + 
+				*GGXX_1PPOSX +
+				*GGXX_2PPOSX +
 				*GGXX_1PPOSY +
 				*GGXX_2PPOSY +
 				*GGXX_1PACT +
 				*GGXX_2PACT +
 				*GGXX_1PFRAME +
 				*GGXX_2PFRAME +
-				*GGXX_1PLIFE + 
-				*GGXX_2PLIFE + 
+				*GGXX_1PLIFE +
+				*GGXX_2PLIFE +
 				*GGXX_1PTENSION +
 				*GGXX_2PTENSION;
-			value = value + (value>>8) + (value>>16) + (value>>24);
+			value = value + (value >> 8) + (value >> 16) + (value >> 24);
 #else
 			value = *GGXX_TIME +
-				*GGXX_1PLIFE + 
-				*GGXX_2PLIFE + 
+				*GGXX_1PLIFE +
+				*GGXX_2PLIFE +
 				*GGXX_1PTENSION +
 				*GGXX_2PTENSION;
 #endif
@@ -4028,7 +3944,7 @@ BYTE getSyncCheckValue(void)
 			/* ìØä˙ÉYÉåÇÃÇΩÇﬂÇÃÉçÉO */
 			for (int i = 0; i < 9; i++)
 			{
-				strcpy(g_syncErrLog[9-i], g_syncErrLog[8-i]);
+				strcpy(g_syncErrLog[9 - i], g_syncErrLog[8 - i]);
 			}
 			//sprintf(g_syncErrLog[0], "nettime=%d, time=%d, frmcnt=%d, rnd=%d\nLife=%d:%d, tg=%d:%d\nfaint=%d:%d\n",
 			//	g_netMgr->m_time, *GGXX_TIME, *GGXX_FRAMECOUNTER, GGXX_RANDOMTABLE[*GGXX_RANDOMCOUNTER], *GGXX_1PLIFE, *GGXX_2PLIFE,
@@ -4045,7 +3961,7 @@ BYTE getSyncCheckValue(void)
 #else
 		value = g_netMgr->m_time;
 #endif
-	}
+		}
 
 #if _DEBUG
 	// à”ê}ìIÇ…SYNCERRORÇà¯Ç´ãNÇ±Ç∑
@@ -4056,13 +3972,13 @@ BYTE getSyncCheckValue(void)
 #endif
 
 	return (BYTE)(value % 0xff);
-}
+	}
 
 void drawGGXXWindow(char* p_str, int p_select, int p_left, int p_top, int p_right, int p_bottom)
 {
 	g_d3dDev->SetRenderState(D3DRS_ALPHATESTENABLE, true);
 	g_d3dDev->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-	g_d3dDev->SetRenderState(D3DRS_BLENDOP , D3DBLENDOP_ADD);
+	g_d3dDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	g_d3dDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	g_d3dDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	g_d3dDev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
@@ -4083,7 +3999,7 @@ void drawGGXXWindow(char* p_str, int p_select, int p_left, int p_top, int p_righ
 	d3dv[3].setPos((float)p_right, (float)p_bottom);
 	d3dv[3].setColor(0x80000080);
 	g_d3dDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, d3dv, sizeof(D3DV_GGN));
-	
+
 	d3dv[0].setPos((float)p_left, (float)p_top);
 	d3dv[0].setColor(0xffff0000);
 	d3dv[1].setPos((float)p_right, (float)p_top);
@@ -4100,7 +4016,7 @@ void drawGGXXWindow(char* p_str, int p_select, int p_left, int p_top, int p_righ
 	{
 		bool eos = false;
 		int y = 4, line = 0;
-		char tmp[256], *p;
+		char tmp[256], * p;
 		strcpy(tmp, p_str);
 		p = tmp;
 		char* dlm = __mbschr(p, '\r');
@@ -4122,15 +4038,14 @@ void drawGGXXWindow(char* p_str, int p_select, int p_left, int p_top, int p_righ
 			}
 			else
 			{
-				/* ëIëîwåi */
 				if (line == p_select)
 				{
 					g_d3dDev->SetTexture(0, NULL);
-					d3dv[0].setPos((float)p_left+1, (float)p_top + y);
+					d3dv[0].setPos((float)p_left + 1, (float)p_top + y);
 					d3dv[0].setColor(0x800000ff);
 					d3dv[1].setPos((float)p_right, (float)p_top + y);
 					d3dv[1].setColor(0x800000ff);
-					d3dv[2].setPos((float)p_left+1, (float)p_top + y + 12);
+					d3dv[2].setPos((float)p_left + 1, (float)p_top + y + 12);
 					d3dv[2].setColor(0x800000ff);
 					d3dv[3].setPos((float)p_right, (float)p_top + y + 12);
 					d3dv[3].setColor(0x800000ff);
@@ -4170,7 +4085,7 @@ void getMachineID(char* p_id, char* p_key)
 #else
 	getMacAddress(0, orgid);
 #endif
-	
+
 	BYTE tmp;
 	tmp = orgid[0]; orgid[0] = orgid[3]; orgid[3] = tmp;
 	tmp = orgid[1]; orgid[1] = orgid[4]; orgid[4] = tmp;
@@ -4220,15 +4135,15 @@ void DBGOUT_LOG(char* fmt, ...)
 #if DEBUG_OUTPUT_LOG
 	va_list ap;
 	va_start(ap, fmt);
-	
+
 	char buf[1024];
 	vsprintf(buf, fmt, ap);
 
 	OutputDebugString(buf);
-	
+
 	char fname[256];
 	convertModulePath(fname, "log.txt");
-	FILE *fp = fopen(fname, "a");
+	FILE* fp = fopen(fname, "a");
 	if (fp)
 	{
 		fprintf(fp, buf);
@@ -4244,7 +4159,7 @@ void DBGOUT_NET(char* fmt, ...)
 #if DEBUG_OUTPUT_NET
 	va_list ap;
 	va_start(ap, fmt);
-	
+
 	char buf[1024];
 	vsprintf(buf, fmt, ap);
 
@@ -4258,7 +4173,7 @@ void DBGOUT_NET(char* fmt, ...)
 		sprintf(buf2, "%d(xxx) : %s", timeGetTime(), buf);
 	}
 	OutputDebugString(buf2);
-	
+
 	//çƒãNÇµÇƒÇµÇ‹Ç§ÇÃÇ≈Ç±Ç±Ç≈ÇÕÉçÉOÇ»Çµ
 	EnterCriticalSection(&g_csLogOut);
 	if (strlen(g_netLog) + strlen(buf2) < LOG_SIZE) strcat(g_netLog, buf2);
@@ -4272,7 +4187,7 @@ void WRITE_DEBUGLOG(char* p_cause)
 {
 	p_cause;
 #if DEBUG_OUTPUT_NET || DEBUG_OUTPUT_KEY || DEBUG_OUTPUT_RND
-	FILE *fp;
+	FILE* fp;
 	char basename[1024];
 #if !TESTER
 	sprintf(basename, "%s/%08d_%d_%s", g_moduleDir, g_startBattleTime, g_setting.port, p_cause);
@@ -4312,16 +4227,16 @@ void WRITE_DEBUGLOG(char* p_cause)
 
 void WRITE_REPLAY_RAWDATA(int p_size)
 {
-//#if _DEBUG
-//	FILE *fp;
-//	char name[256];
-//#if !TESTER
-//	sprintf(name, "unz%08d_%d.rep", g_startBattleTime, g_setting.port);
-//#else
-//	sprintf(name, "unz%d.rep", g_setting.port);
-//#endif
-//	fp = fopen(name, "wb");
-//	fwrite(&g_replay.m_data, p_size, 1, fp);
-//	fclose(fp);
-//#endif
+	//#if _DEBUG
+	//	FILE *fp;
+	//	char name[256];
+	//#if !TESTER
+	//	sprintf(name, "unz%08d_%d.rep", g_startBattleTime, g_setting.port);
+	//#else
+	//	sprintf(name, "unz%d.rep", g_setting.port);
+	//#endif
+	//	fp = fopen(name, "wb");
+	//	fwrite(&g_replay.m_data, p_size, 1, fp);
+	//	fclose(fp);
+	//#endif
 }

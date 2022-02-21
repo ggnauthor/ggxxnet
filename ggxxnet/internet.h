@@ -16,5 +16,4 @@
 //******************************************************************
 // prototypes
 //******************************************************************
-int internet_get(char* p_buf, int p_bufsize, char* p_server, char* p_target);
-int internet_post(char* p_buf, int p_sendsize, int p_bufsize, char* p_server, char* p_target);
+int makePost(char* p_buf, int p_sendsize, int p_bufsize, char* p_server, char* p_target,char* response);
