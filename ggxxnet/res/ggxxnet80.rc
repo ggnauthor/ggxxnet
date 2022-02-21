@@ -7,7 +7,9 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "windows.h"
+#pragma comment(lib, "Iphlpapi.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS

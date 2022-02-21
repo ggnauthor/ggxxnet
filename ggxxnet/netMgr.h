@@ -133,7 +133,7 @@ enum EStateType
 	
 	State_Watch,			// ŠÏí’†
 	State_Watch_Playable,	// ŠÏí’†‚¾‚ª‘Îí—v‹‚É‰‚¶‚é
-	State_Busy_Casting,		// ‘Îí’†‚ÅŠÏí‰Â”\
+	State_Busy_Casting,		// ‘Îí’†‚ÅŠÏí‰Â”
 	State_Busy_Casting_NG,	// ‘Îí’†‚ÅŠÏí‰Â”\‚¾‚ªA‚Ü‚¾ƒLƒƒƒ‰ƒZƒŒ’†
 };
 
