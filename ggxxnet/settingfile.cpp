@@ -1,8 +1,8 @@
 /* for Visual Studio 8.0 */
 #ifdef _MSC_VER
-	#if (_MSC_VER >= 1400)
-		#define POINTER_64 __ptr64
-	#endif
+#if (_MSC_VER >= 1400)
+#define POINTER_64 __ptr64
+#endif
 #endif
 
 //******************************************************************
@@ -17,214 +17,177 @@
 
 #include <locale.h>
 #include <mbstring.h>
+#include <string>
+#include <vector>
+#include "internet.h"
 
 //******************************************************************
 // function
 //******************************************************************
 
-void readSettingFile(void)
-{
-	// カレントパスの切り替え前なのでそのままでok
-	//char datPath[1024];
-	//sprintf(datPath, "%s/"DATNAME, g_moduleDir);
-	FILE *fp = fopen(DATNAME, "rb");
-	if (fp)
-	{
-		int datasize = zfsize(fp);
-		int ver;
-		if (datasize == 310)		ver = 100;	// ver1.00-1.01
-		else if (datasize == 311)	ver = 102;	// ver1.02-1.04
-		else if (datasize == 376)	ver = 105;	// ver1.05
-		else if (datasize == 2936)	ver = 106;	// ver1.06-1.09
-		else
-		{
-			zfread((char*)&ver, 4, fp);			// ver1.10以降
-			fseek(fp, 0, SEEK_SET);
-		}
 
-		if (ver == 100)
-		{
-			SettingInfo_v100 si100;
-			zfread((char*)&si100, sizeof(si100), fp);
-			
-			g_setting.ver			= 0;
-			memcpy(g_setting.scriptAddress, si100.scriptAddress, 256);
-			__strncpy(g_setting.userName, si100.userName, 10);
-			__strncpy(g_setting.trip, si100.trip, 10);
-			g_setting.enableNet		= si100.enableNet;
-			g_setting.port			= si100.port;
-			g_setting.delay			= si100.delay;
-			g_setting.wait			= si100.wait;
-			g_setting.useEx			= si100.useEx;
-			g_setting.dispInvCombo	= si100.dispInvCombo;
-			g_setting.wins			= si100.wins;
-			g_setting.rank			= si100.rank;
-		}
-		else if (ver == 102)
-		{
-			SettingInfo_v102 si102;
-			zfread((char*)&si102, sizeof(si102), fp);
 
-			g_setting.ver			= 0;
-			memcpy(g_setting.scriptAddress, si102.scriptAddress, 256);
-			__strncpy(g_setting.userName, si102.userName, 10);
-			__strncpy(g_setting.trip, si102.trip, 10);
-			g_setting.enableNet		= si102.enableNet;
-			g_setting.port			= si102.port;
-			g_setting.delay			= si102.delay;
-			g_setting.ignoreMisNode	= si102.ignoreMisNode;
-			g_setting.wait			= si102.wait;
-			g_setting.useEx			= si102.useEx;
-			g_setting.dispInvCombo	= si102.dispInvCombo;
-			g_setting.wins			= si102.wins;
-			g_setting.rank			= si102.rank;
-		}
-		else if (ver == 105)
-		{
-			SettingInfo_v105 si105;
-			zfread((char*)&si105, sizeof(si105), fp);
+std::vector<std::string> split(std::string s, std::string delimiter) {
+	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+	std::string token;
+	std::vector<std::string> res;
 
-			g_setting.ver			= 0;
-			memcpy(g_setting.scriptAddress, si105.scriptAddress, 256);
-			__strncpy(g_setting.userName, si105.userName, 10);
-			__strncpy(g_setting.trip, si105.trip, 10);
-			g_setting.enableNet		= si105.enableNet;
-			g_setting.port			= si105.port;
-			g_setting.delay			= si105.delay;
-			g_setting.ignoreMisNode	= si105.ignoreMisNode;
-			g_setting.wait			= si105.wait;
-			g_setting.useEx			= si105.useEx;
-			g_setting.dispInvCombo	= si105.dispInvCombo;
-			g_setting.wins			= si105.wins;
-			g_setting.rank			= si105.rank;
+	while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+		token = s.substr(pos_start, pos_end - pos_start);
+		pos_start = pos_end + delim_len;
+		if (token.compare("null") == 0) {
+			res.push_back("");
 		}
-		else if (ver == 106)
-		{
-			SettingInfo_v106 si106;
-			zfread((char*)&si106, sizeof(si106), fp);
-
-			g_setting.ver			= 0;
-			memcpy(g_setting.scriptAddress, si106.scriptAddress, 256);
-			memcpy(g_setting.addressList, si106.addressList, 256 * 10);
-			__strncpy(g_setting.userName, si106.userName, 10);
-			__strncpy(g_setting.trip, si106.trip, 10);
-			g_setting.enableNet		= si106.enableNet;
-			g_setting.port			= si106.port;
-			g_setting.delay			= si106.delay;
-			g_setting.ignoreMisNode	= si106.ignoreMisNode;
-			g_setting.ignoreSlow	= si106.ignoreSlow;
-			g_setting.wait			= si106.wait;
-			g_setting.useEx			= si106.useEx;
-			g_setting.dispInvCombo	= si106.dispInvCombo;
-			g_setting.wins			= si106.wins;
-			g_setting.rank			= si106.rank;
+		else {
+			res.push_back(token);
 		}
-		else if (ver == 110)
-		{
-			SettingInfo_v110 setinf;
-			zfread((char*)&setinf, sizeof(setinf), fp);
-
-			g_setting.ver			= setinf.ver;
-			memcpy(g_setting.scriptAddress, setinf.scriptAddress, 256);
-			memcpy(g_setting.addressList, setinf.addressList, 256 * 10);
-			__strncpy(g_setting.userName, setinf.userName, 40);
-			g_setting.userName[21] = '\0';	// 40byte分あるが実際には20byteまで
-			__strncpy(g_setting.trip, setinf.trip, 10);
-			
-			g_setting.enableNet		= setinf.enableNet;
-			g_setting.port			= setinf.port;
-			g_setting.delay			= setinf.delay;
-			g_setting.ignoreMisNode	= setinf.ignoreMisNode;
-			g_setting.ignoreSlow	= setinf.ignoreSlow;
-			g_setting.wait			= setinf.wait;
-			g_setting.useEx			= setinf.useEx;
-			g_setting.dispInvCombo	= setinf.dispInvCombo;
-			g_setting.showfps		= setinf.showfps;
-			g_setting.wins			= setinf.wins;
-			g_setting.rank			= setinf.rank;
-			g_setting.score			= setinf.score;
-			g_setting.totalBattle	= setinf.totalBattle;
-			g_setting.totalWin		= setinf.totalWin;
-			g_setting.totalLose		= setinf.totalLose;
-			g_setting.totalDraw		= setinf.totalDraw;
-			g_setting.totalError	= setinf.totalError;
-			g_setting.slowRate		= setinf.slowRate;
-			g_setting.rounds		= setinf.rounds;
-			__strncpy(g_setting.msg, setinf.msg, 255);
-		}
-		else if (ver == DATVERSION)
-		{
-			zfread((char*)&g_setting, sizeof(SettingInfo), fp);
-		}
-
-		// 名無しチェック
-		if (g_setting.userName[0] == '\0')
-		{
-			strcpy(g_setting.userName, "NONAME");
-		}
-		// 使用不可文字チェック
-		unsigned char* invchr = _mbschr((unsigned char*)g_setting.userName, '◆');
-		if (invchr)
-		{
-			invchr[0] = '*';
-			invchr[1] = '*';
-		}
-		invchr = _mbschr((unsigned char*)g_setting.userName, '@');
-		if (invchr)
-		{
-			invchr[0] = '*';
-		}
-
-		// MaxRelayNodeのチェック
-		if (g_setting.watchMaxNodes > WATCH_MAX_CHILD_BASE) g_setting.watchMaxNodes = WATCH_MAX_CHILD_BASE;
-		if (g_setting.watchMaxNodes < 0) g_setting.watchMaxNodes = 0;
-
-		g_setting.wait = 3;
-
-		strlower(g_setting.scriptAddress);
-		strtrim(g_setting.scriptAddress);
-
-		/* 照合用にLong値を生成 */
-		if (useLobbyServer())
-		{
-			char md5[33];
-			getMD5((BYTE*)g_setting.scriptAddress, strlen(g_setting.scriptAddress), (BYTE*)md5);
-			for (int i = 0; i < 4; i++) ((char*)&g_scriptCode)[i] = md5[i] + md5[8+i] + md5[16+i] + md5[24+i];
-		}
-		else
-		{
-			// ノードリストは固定値とする
-			g_scriptCode = 0xffffffff;
-		}
-		setlocale(LC_ALL, "");
-
-		fclose(fp);
 	}
 
-	// 1.20-2からignoreSlowConnectionsはiniから取得
-	g_setting.ignoreSlow = g_iniFileInfo.m_ignoreSlowConnections;
+	res.push_back(s.substr(pos_start));
+	res.pop_back();
+	return res;
 }
 
-void writeSettingFile(void)
-{
-	char datPath[1024];
-	sprintf(datPath, "%s/ggn_setting.dat", g_moduleDir);
-
-	// バックアップ取る
-	if (g_setting.ver != DATVERSION)
-	{
-		char olddatPath[1024];
-		sprintf(olddatPath, "%s/ggn_setting.dat_old", g_moduleDir);
-
-		remove(olddatPath);
-		rename(datPath, olddatPath);
-	}
-
-	FILE *fp = fopen(datPath, "wb");
-	if (fp)
-	{
-		g_setting.ver = DATVERSION;
-		zfwrite((char*)&g_setting, sizeof(SettingInfo), fp, 0);
-		fclose(fp);
-	}
+void setSettings(void) {
+	char* server, * script;
+	//getscpiptaddr(server, script);
+	char response[10];
+	char command[1024];
+	sprintf(command, "{\"ver\": %d,\"scriptAddress\": \"%s\",\
+		\"userName\": \"%s\",\"trip\": 1,\"enableNet\": %d,\"port\": %d,\
+		\"delay\": %d,\"ignoreMisNode\": %d,\"ignoreSlow\": %d,\"wait\": %d,\
+		\"useEx\": %d,\"dispInvCombo\": %d,\"showfps\": %d,\"wins\": %d,\
+		\"rank\": %d,\"score\": %d,\"totalBattle\": %d,\"totalWin\": %d,\
+		\"totalLose\": %d,\"totalDraw\": %d,\"totalError\": %d,\"slowRate\": %d,\
+		\"rounds\": %d,\"msg\": \"%s\",\"watchBroadcast\": %d,\"watchIntrusion\": %d,\
+		\"watchSaveReplay\": %d,\"watchMaxNodes\": %d}"
+		, g_setting.ver, g_setting.scriptAddress, g_setting.userName, g_setting.enableNet, g_setting.port, g_setting.delay, g_setting.ignoreMisNode, g_setting.ignoreSlow, g_setting.wait, g_setting.useEx
+		, g_setting.dispInvCombo, g_setting.showfps, g_setting.wins, g_setting.rank, g_setting.score, g_setting.totalBattle, g_setting.totalWin, g_setting.totalLose, g_setting.totalDraw, g_setting.totalError
+		, g_setting.slowRate, g_setting.rounds, g_setting.msg, g_setting.watchBroadcast, g_setting.watchIntrusion, g_setting.watchSaveReplay, g_setting.watchMaxNodes);
+	makePost(command, strlen(command), 1024, "26.68.204.99", "/set-config", response);
+}
+void getSettings(void) {
+	char* server, * script;
+	//getscpiptaddr(server, script);
+	//getNameTrip("Arek");
+	char response[1024];
+	char command[256];
+	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
+	makePost(command, strlen(command), 1024, "26.68.204.99", "/get-config", response);
+	std::string res = response;
+	std::vector<std::string> splitted = split(res, "|");
+	//////////////////////////////////////////////////////////////////////
+	//watchMaxNodes
+	std::string watchMaxNodes = splitted.back();
+	g_setting.watchMaxNodes = atoi(watchMaxNodes.c_str());
+	splitted.pop_back();
+	//watchSaveReplay
+	std::string watchSaveReplay = splitted.back();
+	g_setting.watchSaveReplay = atoi(watchSaveReplay.c_str());
+	splitted.pop_back();
+	//watchIntrusion
+	std::string watchIntrusion = splitted.back();
+	g_setting.watchIntrusion = atoi(watchIntrusion.c_str());
+	splitted.pop_back();
+	//watchBroadcast
+	std::string watchBroadcast = splitted.back();
+	g_setting.watchBroadcast = atoi(watchBroadcast.c_str());
+	splitted.pop_back();
+	//msg
+	std::string msg = splitted.back();
+	strcpy(g_setting.msg, msg.c_str());
+	splitted.pop_back();
+	//rounds
+	std::string rounds = splitted.back();
+	g_setting.rounds = atoi(rounds.c_str());
+	splitted.pop_back();
+	//slowRate
+	std::string slowRate = splitted.back();
+	g_setting.slowRate = atoi(slowRate.c_str());
+	splitted.pop_back();
+	//totalError
+	std::string totalError = splitted.back();
+	g_setting.totalError = atoi(totalError.c_str());
+	splitted.pop_back();
+	//totalDraw
+	std::string totalDraw = splitted.back();
+	g_setting.totalDraw = atoi(totalDraw.c_str());
+	splitted.pop_back();
+	//totalLose
+	std::string totalLose = splitted.back();
+	g_setting.totalLose = atoi(totalLose.c_str());
+	splitted.pop_back();
+	//totalWin
+	std::string totalWin = splitted.back();
+	g_setting.totalWin = atoi(totalWin.c_str());
+	splitted.pop_back();
+	//totalBattle
+	std::string totalBattle = splitted.back();
+	g_setting.totalBattle = atoi(totalBattle.c_str());
+	splitted.pop_back();
+	//score
+	std::string score = splitted.back();
+	g_setting.score = atoi(score.c_str());
+	splitted.pop_back();
+	//rank
+	std::string rank = splitted.back();
+	g_setting.rank = atoi(rank.c_str());
+	splitted.pop_back();
+	//wins
+	std::string wins = splitted.back();
+	g_setting.wins = atoi(wins.c_str());
+	splitted.pop_back();
+	//showfps
+	std::string showfps = splitted.back();
+	g_setting.showfps = atoi(showfps.c_str());
+	splitted.pop_back();
+	//dispInvCombo
+	std::string dispInvCombo = splitted.back();
+	g_setting.dispInvCombo = atoi(dispInvCombo.c_str());
+	splitted.pop_back();
+	//useEx
+	std::string useEx = splitted.back();
+	g_setting.useEx = atoi(useEx.c_str());
+	splitted.pop_back();
+	//wait
+	std::string wait = splitted.back();
+	g_setting.wait = atoi(wait.c_str());
+	splitted.pop_back();
+	//ignoreSlow
+	std::string ignoreSlow = splitted.back();
+	g_setting.ignoreSlow = atoi(ignoreSlow.c_str());
+	splitted.pop_back();
+	//ignoreMisNode
+	std::string ignoreMisNode = splitted.back();
+	g_setting.ignoreMisNode = atoi(ignoreMisNode.c_str());
+	splitted.pop_back();
+	//delay
+	std::string delay = splitted.back();
+	g_setting.delay = atoi(delay.c_str());
+	splitted.pop_back();
+	//port
+	std::string port = splitted.back();
+	g_setting.port = atoi(port.c_str());
+	splitted.pop_back();
+	//enableNet
+	std::string enableNet = splitted.back();
+	g_setting.enableNet = atoi(enableNet.c_str());
+	splitted.pop_back();
+	//trip
+	std::string trip = splitted.back();
+	strcpy(g_setting.trip, "");
+	splitted.pop_back();
+	//userName
+	std::string userName = splitted.back();
+	strcpy(g_setting.userName, userName.c_str());
+	splitted.pop_back();
+	//scriptAddress
+	std::string scriptAddress = splitted.back();
+	strcpy(g_setting.scriptAddress, scriptAddress.c_str());
+	splitted.pop_back();
+	//ver
+	std::string ver = splitted.back();
+	g_setting.ver = atoi(ver.c_str());
+	splitted.pop_back();
+	//////////////////////////////////////////////////////////////////////
 }

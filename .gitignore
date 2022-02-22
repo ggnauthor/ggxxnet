@@ -408,3 +408,5 @@ FodyWeavers.xsd
 ggxxnet.dll
 *.vcxproj
 *.vcxproj.filters
+*.sln
+.idea/*
