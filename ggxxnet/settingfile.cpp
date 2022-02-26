@@ -20,7 +20,8 @@
 #include <string>
 #include <vector>
 #include "internet.h"
-
+#include <sstream>
+#include <fstream>
 //******************************************************************
 // function
 //******************************************************************
@@ -49,10 +50,22 @@ std::vector<std::string> split(std::string s, std::string delimiter) {
 }
 
 void setSettings(void) {
-	char* server, * script;
-	//getscpiptaddr(server, script);
 	char response[10];
 	char command[1024];
+	std::ifstream configFile("config.txt");
+	std::vector<std::string> config;
+	std::string line;
+	while (std::getline(configFile, line))
+	{
+		config.push_back(line);
+	}
+	configFile.close();
+	std::string password = config.back();
+	config.pop_back();
+	std::string username = config.back();
+	config.pop_back();
+	std::string server = config.back();
+	config.pop_back();
 	sprintf(command, "{\"ver\": %d,\"scriptAddress\": \"%s\",\
 		\"userName\": \"%s\",\"trip\": 1,\"enableNet\": %d,\"port\": %d,\
 		\"delay\": %d,\"ignoreMisNode\": %d,\"ignoreSlow\": %d,\"wait\": %d,\
@@ -64,16 +77,27 @@ void setSettings(void) {
 		, g_setting.ver, g_setting.scriptAddress, g_setting.userName, g_setting.enableNet, g_setting.port, g_setting.delay, g_setting.ignoreMisNode, g_setting.ignoreSlow, g_setting.wait, g_setting.useEx
 		, g_setting.dispInvCombo, g_setting.showfps, g_setting.wins, g_setting.rank, g_setting.score, g_setting.totalBattle, g_setting.totalWin, g_setting.totalLose, g_setting.totalDraw, g_setting.totalError
 		, g_setting.slowRate, g_setting.rounds, g_setting.msg, g_setting.watchBroadcast, g_setting.watchIntrusion, g_setting.watchSaveReplay, g_setting.watchMaxNodes);
-	makePost(command, strlen(command), 1024, "26.68.204.99", "/set-config", response);
+	makePost(command, strlen(command), 1024, server, "/set-config", response);
 }
 void getSettings(void) {
-	char* server, * script;
-	//getscpiptaddr(server, script);
-	//getNameTrip("Arek");
 	char response[1024];
 	char command[256];
-	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
-	makePost(command, strlen(command), 1024, "26.68.204.99", "/get-config", response);
+	std::ifstream configFile("config.txt");
+	std::vector<std::string> config;
+	std::string line;
+	while (std::getline(configFile, line))
+	{
+		config.push_back(line);
+	}
+	configFile.close();
+	std::string password = config.back();
+	config.pop_back();
+	std::string username = config.back();
+	config.pop_back();
+	std::string server = config.back();
+	config.pop_back();
+	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
+	makePost(command, strlen(command), 1024, server, "/get-config", response);
 	std::string res = response;
 	std::vector<std::string> splitted = split(res, "|");
 	//////////////////////////////////////////////////////////////////////

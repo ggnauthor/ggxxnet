@@ -10,11 +10,12 @@
 //******************************************************************
 #include "internet.h"
 #include "util.h"
+#include <string>
 
 //******************************************************************
 // functions
 //******************************************************************
-int makePost(char* p_buf, int p_sendsize, int p_bufsize, char* p_server, char* p_target, char* response)
+int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, char* p_target, char* response)
 {
 
 	HINTERNET hInternet = InternetOpen("xxx", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
@@ -23,7 +24,7 @@ int makePost(char* p_buf, int p_sendsize, int p_bufsize, char* p_server, char* p
 		OutputDebugString("InternetOpen");
 		return 0;
 	}
-	HINTERNET hHttpSession = InternetConnect(hInternet, p_server, INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+	HINTERNET hHttpSession = InternetConnect(hInternet, p_server.c_str(), INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
 
 	if (hHttpSession == NULL)
 	{

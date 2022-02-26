@@ -26,6 +26,7 @@
 #include <math.h>
 #include <string.h>
 #include <sstream>
+#include <fstream>
 //******************************************************************
 // const
 //******************************************************************
@@ -178,6 +179,7 @@ void __stdcall tester_input(void);
 #endif
 
 #include "ggxxinterface.h"
+#include <vector>
 
 //******************************************************************
 // function
@@ -3101,13 +3103,23 @@ void ggn_render(void)
 
 void enterServer(bool p_busy)
 {
-	char* server, * script;
-	getscpiptaddr(server, script);
-	char nametrip[256];
-	getNameTrip(nametrip);
 	char response[1024];
 	char command[256];
-	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
+	std::ifstream configFile("config.txt");
+	std::vector<std::string> config;
+	std::string line;
+	while (std::getline(configFile, line))
+	{
+		config.push_back(line);
+	}
+	configFile.close();
+	std::string password = config.back();
+	config.pop_back();
+	std::string username = config.back();
+	config.pop_back();
+	std::string server = config.back();
+	config.pop_back();
+	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
 	makePost(command, strlen(command), 1024, server, "/enter", response);
 	SETFCW(DEFAULT_CW);
 	g_nodeMgr->setOwnNode(response);
@@ -3162,12 +3174,23 @@ bool useLobbyServer(void)
 
 void readServer(void)
 {
-	char* server, * script;
-	getscpiptaddr(server, script);
-
 	char response[1024];
 	char command[256];
-	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
+	std::ifstream configFile("config.txt");
+	std::vector<std::string> config;
+	std::string line;
+	while (std::getline(configFile, line))
+	{
+		config.push_back(line);
+	}
+	configFile.close();
+	std::string password = config.back();
+	config.pop_back();
+	std::string username = config.back();
+	config.pop_back();
+	std::string server = config.back();
+	config.pop_back();
+	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
 	int readsize = makePost(command, strlen(command), 1024, server, "/read", response);
 	SETFCW(DEFAULT_CW);
 
@@ -3213,13 +3236,23 @@ void readServer(void)
 
 void leaveServer(void)
 {
-	char* server, * script;
-	getscpiptaddr(server, script);
-	char nametrip[30];
 	char response[1024];
 	char command[256];
-	sprintf(command, "{\"username\": \"Arek\",\"password\": \"admin\"}");
-	getNameTrip(nametrip);
+	std::ifstream configFile("config.txt");
+	std::vector<std::string> config;
+	std::string line;
+	while (std::getline(configFile, line))
+	{
+		config.push_back(line);
+	}
+	configFile.close();
+	std::string password = config.back();
+	config.pop_back();
+	std::string username = config.back();
+	config.pop_back();
+	std::string server = config.back();
+	config.pop_back();
+	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
 	makePost(command, strlen(command), 256, server, "/leave", response);
 	SETFCW(DEFAULT_CW);
 	DBGOUT_NET("leaveServer end\n");
@@ -3483,25 +3516,7 @@ void writeIniFile(void)
 
 void getNameTrip(char* p_str)
 {
-	// p_strには30バイト以上の文字列が確保されていること!!
-	if (strlen(g_setting.trip) > 0)
-	{
-		static char trip[5] = "";
-
-		if (trip[0] == '\0')
-		{
-			/* 現在の仕様では起動中に自分のTripキーが変更されることは無い */
-			char md5[33];
-			getMD5((BYTE*)g_setting.trip, strlen(g_setting.trip), (BYTE*)md5);
-
-			char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-			for (int i = 0; i < 4; i++) trip[i] = table[(md5[i] + md5[8 + i] + md5[16 + i] + md5[24 + i]) % strlen(table)];
-			trip[4] = '\0';
-		}
-		// g_setting.userNameは20バイトまでしかいれられない
-		sprintf(p_str, "%s◆%s", g_setting.userName, trip);
-	}
-	else __strncpy(p_str, g_setting.userName, 20);
+	__strncpy(p_str, g_setting.userName, 20);
 }
 
 void onDisconnect(char* p_cause)
@@ -3890,7 +3905,7 @@ DWORD WINAPI _lobbyThreadProc(LPVOID lpParameter)
 			}
 		}
 		Sleep(50);
-			}
+}
 	netMgr->m_lobbyThread_end = true;
 	DBGOUT_LOG("lobby thread end.\n");
 

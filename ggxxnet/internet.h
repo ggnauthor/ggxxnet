@@ -12,8 +12,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include <wininet.h>
+#include <string>
 
 //******************************************************************
 // prototypes
 //******************************************************************
-int makePost(char* p_buf, int p_sendsize, int p_bufsize, char* p_server, char* p_target,char* response);
+int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, char* p_target,char* response);
