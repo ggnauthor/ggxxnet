@@ -50,4 +50,3 @@ typedef struct
 // proto types
 //******************************************************************
 void getSettings(void);
-void setSettings(void);

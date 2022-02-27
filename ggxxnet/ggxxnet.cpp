@@ -30,6 +30,7 @@
 //******************************************************************
 // const
 //******************************************************************
+
 char g_paletteNames[CHARACOUNT][256] = {
 	"P(Default)",
 	"K",
@@ -1942,22 +1943,35 @@ void ggn_endBattle(void)
 		else if (g_netMgr->m_playSide == 2 && *GGXX_WINCOUNT2P > *GGXX_WINCOUNT1P) win = 1;
 		else if (*GGXX_WINCOUNT1P == *GGXX_WINCOUNT2P) win = 2;
 
+		char response[1024];
+		char command[256];
+		std::ifstream configFile("config.txt");
+		std::vector<std::string> config;
+		std::string line;
+		while (std::getline(configFile, line))
+		{
+			config.push_back(line);
+		}
+		configFile.close();
+		std::string playerId = config.back();
+		config.pop_back();
+		std::string server = config.back();
+		config.pop_back();
+		sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
+
 		if (win == 1)
 		{
-			g_setting.wins++;
-			g_setting.totalWin++;
+			makePost(command, strlen(command), 1024, server, "/win", response);
 		}
 		else if (win == 0)
 		{
-			g_setting.wins = 0;
-			g_setting.totalLose++;
+			makePost(command, strlen(command), 1024, server, "/lose", response);
 		}
 		else if (win == 2)
 		{
-			g_setting.totalDraw++;
+			makePost(command, strlen(command), 1024, server, "/draw", response);
 		}
 
-		setSettings();
 		// リプレイに終端を付加する
 		g_netMgr->disconnect("endbattle");
 	}
@@ -3100,7 +3114,6 @@ void ggn_render(void)
 	}
 #endif
 }
-
 void enterServer(bool p_busy)
 {
 	char response[1024];
@@ -3113,13 +3126,11 @@ void enterServer(bool p_busy)
 		config.push_back(line);
 	}
 	configFile.close();
-	std::string password = config.back();
-	config.pop_back();
-	std::string username = config.back();
+	std::string playerId = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
-	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
+	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
 	makePost(command, strlen(command), 1024, server, "/enter", response);
 	SETFCW(DEFAULT_CW);
 	g_nodeMgr->setOwnNode(response);
@@ -3184,13 +3195,11 @@ void readServer(void)
 		config.push_back(line);
 	}
 	configFile.close();
-	std::string password = config.back();
-	config.pop_back();
-	std::string username = config.back();
+	std::string playerId = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
-	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
+	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
 	int readsize = makePost(command, strlen(command), 1024, server, "/read", response);
 	SETFCW(DEFAULT_CW);
 
@@ -3246,13 +3255,11 @@ void leaveServer(void)
 		config.push_back(line);
 	}
 	configFile.close();
-	std::string password = config.back();
-	config.pop_back();
-	std::string username = config.back();
+	std::string playerId = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
-	sprintf(command, "{\"username\": \"%s\",\"password\": \"%s\"}", username.c_str(), password.c_str());
+	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
 	makePost(command, strlen(command), 256, server, "/leave", response);
 	SETFCW(DEFAULT_CW);
 	DBGOUT_NET("leaveServer end\n");
@@ -3532,7 +3539,6 @@ void onDisconnect(char* p_cause)
 	saveReplayFile();
 
 	if (strcmp(p_cause, "endbattle") != 0) g_setting.totalError++;
-	setSettings();
 
 
 	/* disconnectされたときに呼ばれる */
@@ -3905,12 +3911,12 @@ DWORD WINAPI _lobbyThreadProc(LPVOID lpParameter)
 			}
 		}
 		Sleep(50);
-}
+	}
 	netMgr->m_lobbyThread_end = true;
 	DBGOUT_LOG("lobby thread end.\n");
 
 	return 0;
-		}
+}
 
 BYTE getSyncCheckValue(void)
 {
@@ -3972,7 +3978,7 @@ BYTE getSyncCheckValue(void)
 #else
 		value = g_netMgr->m_time;
 #endif
-		}
+	}
 
 #if _DEBUG
 	// 意図的にSYNCERRORを引き起こす
@@ -3983,7 +3989,7 @@ BYTE getSyncCheckValue(void)
 #endif
 
 	return (BYTE)(value % 0xff);
-	}
+}
 
 void drawGGXXWindow(char* p_str, int p_select, int p_left, int p_top, int p_right, int p_bottom)
 {

@@ -17,4 +17,4 @@
 //******************************************************************
 // prototypes
 //******************************************************************
-int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, char* p_target,char* response);
+int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, std::string p_target,char* response);

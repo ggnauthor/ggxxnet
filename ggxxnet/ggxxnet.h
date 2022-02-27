@@ -19,25 +19,25 @@
 // const
 //******************************************************************
 #if TESTER
-	#define DEBUG_SYNCERROR_INQUIRY 0
-	#define	DEBUG_OUTPUT_RND	0
-	#define DEBUG_OUTPUT_KEY	0
-	#define DEBUG_OUTPUT_NET	1
-	#define DEBUG_OUTPUT_LOG	0
+#define DEBUG_SYNCERROR_INQUIRY 0
+#define	DEBUG_OUTPUT_RND	0
+#define DEBUG_OUTPUT_KEY	0
+#define DEBUG_OUTPUT_NET	1
+#define DEBUG_OUTPUT_LOG	0
 #else
-	#ifdef _DEBUG
-		#define DEBUG_INQUIRY_MODE	1	// 調査用の機能などを有効にする。リリース版とは対戦しないこと！
-		#define	DEBUG_OUTPUT_RND	0	// 乱数に関するログを出す
-		#define DEBUG_OUTPUT_KEY	0	// キー入力に関するログを出す
-		#define DEBUG_OUTPUT_NET	1	// 通信に関するログを出す
-		#define DEBUG_OUTPUT_LOG	1	// 一般的なログを出す
-	#else
-		#define DEBUG_SYNCERROR_INQUIRY 0
-		#define	DEBUG_OUTPUT_RND	0
-		#define DEBUG_OUTPUT_KEY	0
-		#define DEBUG_OUTPUT_NET	0
-		#define DEBUG_OUTPUT_LOG	1
-	#endif
+#ifdef _DEBUG
+#define DEBUG_INQUIRY_MODE	1	// 調査用の機能などを有効にする。リリース版とは対戦しないこと！
+#define	DEBUG_OUTPUT_RND	0	// 乱数に関するログを出す
+#define DEBUG_OUTPUT_KEY	0	// キー入力に関するログを出す
+#define DEBUG_OUTPUT_NET	1	// 通信に関するログを出す
+#define DEBUG_OUTPUT_LOG	1	// 一般的なログを出す
+#else
+#define DEBUG_SYNCERROR_INQUIRY 0
+#define	DEBUG_OUTPUT_RND	0
+#define DEBUG_OUTPUT_KEY	0
+#define DEBUG_OUTPUT_NET	0
+#define DEBUG_OUTPUT_LOG	1
+#endif
 #endif
 
 #define DEFAULT_CW 0x027f
@@ -63,13 +63,13 @@
 
 enum
 {
-	FONT_W			= 400,
-	FONT_AA			= 1,
-	FONT_W_SHADOW	= 800,
-	FONT_AA_SHADOW	= 4,
+	FONT_W = 400,
+	FONT_AA = 1,
+	FONT_W_SHADOW = 800,
+	FONT_AA_SHADOW = 4,
 };
 
-const BYTE INVALID_MID[10]	= { 0, 0, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff };
+const BYTE INVALID_MID[10] = { 0, 0, 0, 0, 0, 0, 0xff, 0xff, 0xff, 0xff };
 
 #define UNKNOWN_NAME "@UnknownName@"
 
@@ -226,11 +226,11 @@ class CVsNetModeInfo
 public:
 	CVsNetModeInfo(void)
 	{
-		m_selectItemIdx	= 0;
-		m_itemPerPage	= 16;
-		m_dispItemHead	= 0;
-		m_sortType		= SORT_STATUS;
-		
+		m_selectItemIdx = 0;
+		m_itemPerPage = 16;
+		m_dispItemHead = 0;
+		m_sortType = SORT_STATUS;
+
 		m_menu_cursor = 0;
 		m_menu_visible = false;
 	}
@@ -250,14 +250,14 @@ class CReplayModeInfo
 public:
 	CReplayModeInfo(void)
 	{
-		m_selectItemIdx	= 0;
-		m_itemPerPage	= 16;
-		m_dispItemHead	= 0;
-		
-		m_repRecording	= false;
-		m_frameCount	= 0;
-		m_format		= -1;
-		m_playing		= false;
+		m_selectItemIdx = 0;
+		m_itemPerPage = 16;
+		m_dispItemHead = 0;
+
+		m_repRecording = false;
+		m_frameCount = 0;
+		m_format = -1;
+		m_playing = false;
 		strcpy(m_curdir, "REPLAY");
 	}
 	~CReplayModeInfo(void)
@@ -271,7 +271,7 @@ public:
 
 	TDynArray<ReplayItem*>	m_itemlist;
 	char					m_curdir[256];
-	
+
 	int						m_level;
 	TDynArray<int>			m_stackSelect;
 	TDynArray<int>			m_stackPageHead;
@@ -359,8 +359,8 @@ extern bool					g_ignoreWatchIn;
 
 //-------------------------------------------------------debug
 extern CRITICAL_SECTION		g_csLogOut;
-extern char*				g_netLog;
-extern char*				g_keyLog;
+extern char* g_netLog;
+extern char* g_keyLog;
 //extern char*				g_rndLog;
 //extern char				g_syncErrLog[10][256];
 extern char					g_moduleDir[256];

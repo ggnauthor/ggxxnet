@@ -15,7 +15,7 @@
 //******************************************************************
 // functions
 //******************************************************************
-int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, char* p_target, char* response)
+int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, std::string p_target, char* response)
 {
 
 	HINTERNET hInternet = InternetOpen("xxx", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
@@ -33,7 +33,7 @@ int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, c
 		return 0;
 	}
 	PCTSTR  rgpszAcceptTypes[] = { ("application/json"), NULL };
-	HINTERNET hHttpRequest = HttpOpenRequest(hHttpSession, "POST", p_target, NULL, NULL, rgpszAcceptTypes, INTERNET_FLAG_RELOAD, 0);
+	HINTERNET hHttpRequest = HttpOpenRequest(hHttpSession, "POST", p_target.c_str(), NULL, NULL, rgpszAcceptTypes, INTERNET_FLAG_RELOAD, 0);
 	HttpAddRequestHeaders(hHttpRequest, "Content-Type: application/json\r\n", -1, HTTP_ADDREQ_FLAG_ADD);
 	if (hHttpRequest == NULL)
 	{
