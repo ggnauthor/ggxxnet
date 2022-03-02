@@ -43,7 +43,7 @@
 #define DEFAULT_CW 0x027f
 
 #define	DEFAULT_DELAY	2
-#define	DEFAULT_PORT	11563
+#define	DEFAULT_PORT	10009;
 
 #define INPUT_SYNCERROR		0xfffffffe
 #define INPUT_DISCONNECT	0xfffffffd

@@ -157,10 +157,6 @@ void getSettings(void) {
 	std::string delay = splitted.back();
 	g_setting.delay = atoi(delay.c_str());
 	splitted.pop_back();
-	//port
-	std::string port = splitted.back();
-	g_setting.port = atoi(port.c_str());
-	splitted.pop_back();
 	//enableNet
 	std::string enableNet = splitted.back();
 	g_setting.enableNet = atoi(enableNet.c_str());

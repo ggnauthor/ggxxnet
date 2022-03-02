@@ -248,7 +248,6 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD dwReason, LPVOID lpReserved)
 
 #endif
 		DBGOUT_LOG("readSetting ok!!\n");
-
 		g_netMgr = new CNetMgr;
 		if (g_netMgr->init(g_setting.port, g_setting.delay, useLobbyServer()) == false)
 		{
@@ -3130,7 +3129,7 @@ void enterServer(bool p_busy)
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
-	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
+	sprintf(command, "{\"playerId\": \"%s\",\"port\": %d}", playerId.c_str(), g_setting.port);
 	makePost(command, strlen(command), 1024, server, "/enter", response);
 	SETFCW(DEFAULT_CW);
 	g_nodeMgr->setOwnNode(response);
@@ -3377,7 +3376,8 @@ void initSetting(void)
 	__strncpy(g_setting.userName, "NONAME", 20);
 	__strncpy(g_setting.trip, "", 10);
 	g_setting.enableNet = 1;
-	g_setting.port = DEFAULT_PORT;
+	srand(time(NULL));
+	g_setting.port = rand() % 10000 + 1111;;
 	g_setting.delay = DEFAULT_DELAY;
 
 	g_setting.ignoreMisNode = 0;
