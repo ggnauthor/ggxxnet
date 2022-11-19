@@ -11,6 +11,7 @@
 #include "internet.h"
 #include "util.h"
 #include <string>
+#include "ggxxnet.h"
 
 //******************************************************************
 // functions
@@ -45,7 +46,10 @@ int makePost(char* p_buf, int p_sendsize, int p_bufsize, std::string p_server, s
 
 	if (!HttpSendRequest(hHttpRequest, NULL, 0, p_buf, strlen(p_buf)))
 	{
-		OutputDebugString("HttpSendRequest");
+		std::string str = std::to_string(GetLastError());
+		char* cstr = &str[0];
+		DBGOUT_LOG("HttpSendRequest error \n");
+		DBGOUT_LOG(cstr);
 		InternetCloseHandle(hHttpRequest);
 		InternetCloseHandle(hHttpSession);
 		InternetCloseHandle(hInternet);

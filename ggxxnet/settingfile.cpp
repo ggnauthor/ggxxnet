@@ -62,10 +62,13 @@ void getSettings(void) {
 	configFile.close();
 	std::string playerId = config.back();
 	config.pop_back();
+	std::string path = config.back();
+	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
 	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
-	makePost(command, strlen(command), 1024, server, "/get-config", response);
+	std::string address = path + "/get-config";
+	makePost(command, strlen(command), 1024, server, address, response);
 	std::string res = response;
 	std::vector<std::string> splitted = split(res, "|");
 	//////////////////////////////////////////////////////////////////////

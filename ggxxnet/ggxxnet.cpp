@@ -3113,10 +3113,8 @@ void ggn_render(void)
 	}
 #endif
 }
-void enterServer(bool p_busy)
-{
-	char response[1024];
-	char command[256];
+
+std::vector<std::string> getConfig() {
 	std::ifstream configFile("config.txt");
 	std::vector<std::string> config;
 	std::string line;
@@ -3125,12 +3123,22 @@ void enterServer(bool p_busy)
 		config.push_back(line);
 	}
 	configFile.close();
+	return config;
+}
+void enterServer(bool p_busy)
+{
+	char response[1024];
+	char command[256];
+	std::vector<std::string> config = getConfig();
 	std::string playerId = config.back();
+	config.pop_back();
+	std::string path = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
-	sprintf(command, "{\"playerId\": \"%s\",\"port\": %d}", playerId.c_str(), g_setting.port);
-	makePost(command, strlen(command), 1024, server, "/enter", response);
+	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
+	std::string address = path + "/enter";
+	makePost(command, strlen(command), 1024, server, address, response);
 	SETFCW(DEFAULT_CW);
 	g_nodeMgr->setOwnNode(response);
 	DBGOUT_NET("enterServer end\n");
@@ -3186,20 +3194,16 @@ void readServer(void)
 {
 	char response[1024];
 	char command[256];
-	std::ifstream configFile("config.txt");
-	std::vector<std::string> config;
-	std::string line;
-	while (std::getline(configFile, line))
-	{
-		config.push_back(line);
-	}
-	configFile.close();
+	std::vector<std::string> config = getConfig();
 	std::string playerId = config.back();
+	config.pop_back();
+	std::string path = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
 	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
-	int readsize = makePost(command, strlen(command), 1024, server, "/read", response);
+	std::string address = path + "/read";
+	int readsize = makePost(command, strlen(command), 1024, server, address, response);
 	SETFCW(DEFAULT_CW);
 
 	int pos = 0;
@@ -3246,20 +3250,16 @@ void leaveServer(void)
 {
 	char response[1024];
 	char command[256];
-	std::ifstream configFile("config.txt");
-	std::vector<std::string> config;
-	std::string line;
-	while (std::getline(configFile, line))
-	{
-		config.push_back(line);
-	}
-	configFile.close();
+	std::vector<std::string> config = getConfig();
 	std::string playerId = config.back();
+	config.pop_back();
+	std::string path = config.back();
 	config.pop_back();
 	std::string server = config.back();
 	config.pop_back();
 	sprintf(command, "{\"playerId\": \"%s\"}", playerId.c_str());
-	makePost(command, strlen(command), 256, server, "/leave", response);
+	std::string address = path + "/leave";
+	makePost(command, strlen(command), 1024, server, address, response);
 	SETFCW(DEFAULT_CW);
 	DBGOUT_NET("leaveServer end\n");
 }
